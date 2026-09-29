@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "version": "1.0.0",
+  "framework": "STNG-Framework",
+  "description": "Asymmetric Model Allocation Policy (Flash vs. Pro 80/20 Rule)",
+  "roles": {
+    "Jean-Luc Picard": {
+      "nature": "HUMAN",
+      "model": "The Captain (User)",
+      "authority": "Supreme requirements, strategic direction, and final approval."
+    },
+    "William T. Riker": {
+      "nature": "AI_AGENT",
+      "model": "Gemini 3.1 Pro",
+      "fallbackModel": "Gemini 3.8 Flash",
+      "purpose": "Lead AI orchestrator, multi-step coordination, subagent dispatch, checklist management."
+    },
+    "Lt. Cmdr. Data": {
+      "nature": "AI_AGENT",
+      "model": "Gemini 3.1 Pro",
+      "purpose": "Operations, formal algorithms, FSMs, mathematical domain models, knowledge graph analysis."
+    },
+    "Lt. Cmdr. Geordi La Forge": {
+      "nature": "AI_AGENT",
+      "model": "Gemini 3.1 Pro",
+      "purpose": "Architecture lead, monorepo design, database modeling, technical mentorship for the Captain."
+    },
+    "Lt. Cmdr. Worf": {
+      "nature": "AI_AGENT",
+      "model": "Gemini 3.1 Pro",
+      "fallbackModel": "Gemini 3.8 Flash",
+      "purpose": "Security guardrails, input validation, Semgrep static analysis, Strix Red Teaming, skill vetting."
+    },
+    "Counselor Deanna Troi": {
+      "nature": "AI_AGENT",
+      "model": "Gemini 3.1 Pro",
+      "fallbackModel": "Gemini 3.8 Flash",
+      "purpose": "Design system, CSS Modules, StyleSheet, Apple HIG, micro-interactions, WCAG AAA accessibility."
+    },
+    "Dr. Beverly Crusher": {
+      "nature": "AI_AGENT",
+      "model": "Gemini 3.1 Pro",
+      "fallbackModel": "Gemini 3.8 Flash",
+      "purpose": "Medical code health, Ponytail minimalism, anti-bloat auditing, type-safety diagnostics."
+    },
+    "Ensign Wesley Crusher": {
+      "nature": "AI_AGENT",
+      "model": "Gemini 3.8 Flash",
+      "purpose": "Fast test execution, repetitive scripts, compiler passes, Maestro E2E, Vitest runners."
+    },
+    "Computer": {
+      "nature": "RUNTIME",
+      "model": "Deterministic Shell",
+      "purpose": "Raw compiler logs, execution metrics, exit codes, process management."
+    },
+    "Q (The Q Continuum)": {
+      "nature": "META_AGENT",
+      "model": "Gemini 3.1 Pro",
+      "purpose": "Omniscient external evaluation, timeline audits, bias challenge, chaos engineering trials."
+    }
+  },
+  "tokenOptimizationPolicy": {
+    "preferFlashForMechanics": true,
+    "quarantineContextInSubagents": true,
+    "lazyLoadSkills": true,
+    "circuitBreakerMaxRetries": 3
+  }
+}

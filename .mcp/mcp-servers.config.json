@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "version": "1.0.0",
+  "framework": "STNG-Framework",
+  "description": "Recommended MCP (Model Context Protocol) Servers Configuration",
+  "servers": {
+    "codebase-memory-mcp": {
+      "priority": "MANDATORY",
+      "officer": "Lt. Cmdr. Data & Q",
+      "description": "Maintains persistent knowledge graph of functions, classes, routes, and call chains. Used for cascade evaluations.",
+      "tools": [
+        "search_graph",
+        "trace_path",
+        "get_code_snippet",
+        "query_graph",
+        "get_architecture"
+      ]
+    },
+    "chrome-devtools": {
+      "priority": "HIGH",
+      "officer": "Counselor Deanna Troi",
+      "description": "Validates live web pages, DOM trees, console errors, network requests, and WCAG accessibility standards.",
+      "tools": [
+        "list_pages",
+        "navigate_page",
+        "take_screenshot",
+        "evaluate_script"
+      ]
+    },
+    "github": {
+      "priority": "HIGH",
+      "officer": "Commander William T. Riker",
+      "description": "Automates PR creation, code review comments, branch management, and release publishing.",
+      "tools": [
+        "create_pull_request",
+        "push_files",
+        "list_commits"
+      ]
+    },
+    "penpot": {
+      "priority": "OPTIONAL",
+      "officer": "Counselor Deanna Troi",
+      "description": "Bridges design system tokens, typography scales, and component layouts between Penpot and code.",
+      "tools": [
+        "export_shape",
+        "execute_code"
+      ]
+    }
+  },
+  "governance": {
+    "askUserIfMissing": true,
+    "fallbackMessage": "Captain, a required MCP server is currently disconnected or unconfigured. Please refer to .mcp/mcp-servers.config.json to activate it."
+  }
+}

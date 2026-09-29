@@ -1,0 +1,35 @@
+# Node & Dependencies
+node_modules/
+.pnpm-store/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+
+# Runtime outputs & Logs
+.agents/captains_log.json
+.agents/captains_log.md
+logs/
+*.log
+
+# Backups & Temp
+.backup/
+*.tmp
+scratch/

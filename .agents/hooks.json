@@ -1,0 +1,35 @@
+{
+  "version": "1.0.0",
+  "framework": "STNG-Framework",
+  "description": "Antigravity & Gemini CLI Deterministic Model Hooks configuration",
+  "hooks": [
+    {
+      "event": "preToolUse",
+      "name": "worf-security-shield",
+      "path": "./.agents/hooks/worf-security-shield.js",
+      "timeout": 3000,
+      "description": "Intercepts tool calls to prevent dangerous shell executions, unauthorized writes, and security perimeter breaches."
+    },
+    {
+      "event": "postInvocation",
+      "name": "crusher-health-check",
+      "path": "./.agents/hooks/crusher-health-check.js",
+      "timeout": 10000,
+      "description": "Audits touched files for TypeScript compiler health, lint issues, and Ponytail minimalist compliance."
+    },
+    {
+      "event": "postInvocation",
+      "name": "captains-log-writer",
+      "path": "./.agents/hooks/captains-log-writer.js",
+      "timeout": 2000,
+      "description": "Maintains an immutable structured ledger of agent delegations, tool invocations, and health scores."
+    },
+    {
+      "event": "preSkillInvocation",
+      "name": "skill-lifecycle-auditor",
+      "path": "./.agents/hooks/skill-lifecycle-auditor.js",
+      "timeout": 5000,
+      "description": "Checks for upstream skill updates, audits code safety, verifies backward compatibility, and blocks unauthorized modifications."
+    }
+  ]
+}

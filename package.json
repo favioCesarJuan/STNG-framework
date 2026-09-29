@@ -1,0 +1,33 @@
+{
+  "name": "stng-framework",
+  "version": "1.0.0",
+  "description": "Hierarchical Multi-Agent Governance Framework inspired by Star Trek: TNG. Features deterministic model hooks, knowledge graph cascade evaluation, Ponytail minimalism, and enterprise-grade guardrails.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "shield:test": "node .agents/hooks/worf-security-shield.js --test",
+    "health:check": "node .agents/hooks/crusher-health-check.js",
+    "graph:cascade": "node .agents/hooks/cascade-evaluator.js",
+    "skills:audit": "bash scripts/install-skill.sh",
+    "skills:manage": "bash scripts/manage-skills.sh",
+    "log:view": "cat .agents/captains_log.md 2>/dev/null || echo 'No log entries yet.'",
+    "pre-commit": "bash scripts/pre-commit.sh"
+  },
+  "keywords": [
+    "ai-agents",
+    "multi-agent",
+    "star-trek-tng",
+    "antigravity",
+    "gemini-cli",
+    "model-hooks",
+    "knowledge-graph",
+    "deterministic-guardrails",
+    "monorepo-governance",
+    "turborepo"
+  ],
+  "author": "Favio Cesar Juan <faviocjuan@gmail.com>",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
