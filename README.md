@@ -135,7 +135,43 @@ STNG-framework/
 
 ---
 
-## 🚀 Quick Start
+## 📥 Installation & Setup
+
+Choose the installation method suited to your workflow:
+
+### Option A: One-Line Installer (Recommended for Existing Repositories)
+To adopt STNG-Framework into an existing project or monorepo, run this command in your repository root:
+```bash
+curl -fsSL https://raw.githubusercontent.com/favioCesarJuan/STNG-framework/main/install.sh | bash
+```
+*This installs `.agents/hooks/`, `.agents/rules/`, the 7 canonical skills in `.agents/skills/`, and operational scripts.*
+
+### Option B: Clone as a Fresh Starter Kit
+To bootstrap a new project with the framework pre-configured:
+```bash
+# Clone the repository
+git clone https://github.com/favioCesarJuan/STNG-framework.git my-enterprise-project
+cd my-enterprise-project
+
+# Initialize scripts and permissions
+bash scripts/setup-environment.sh
+```
+
+### Option C: Manual Drop-In
+If you prefer explicit control:
+```bash
+git clone --depth 1 https://github.com/favioCesarJuan/STNG-framework.git /tmp/stng
+cp -r /tmp/stng/.agents ./
+cp -r /tmp/stng/scripts ./
+cp /tmp/stng/templates/Agents.md ./
+cp /tmp/stng/templates/rules.md ./
+rm -rf /tmp/stng
+chmod +x scripts/*.sh .agents/hooks/*.js
+```
+
+---
+
+## 🚀 Quick Start & Verification
 
 ### 1. Test All Hooks
 ```bash

@@ -102,7 +102,43 @@ Ubicados en `.agents/hooks/` y declarados en `.agents/hooks.json`:
 
 ---
 
-## 🚀 Inicio Rápido
+## 📥 Instalación y Configuración
+
+Elegí el método de instalación que mejor se adapte a tu flujo de trabajo:
+
+### Opción A: Instalador de una sola línea (Recomendado para proyectos o monorepos existentes)
+Para integrar STNG-Framework en un proyecto o monorepo existente, ejecutá este comando en la raíz de tu repositorio:
+```bash
+curl -fsSL https://raw.githubusercontent.com/favioCesarJuan/STNG-framework/main/install.sh | bash
+```
+*Este comando instala automáticamente `.agents/hooks/`, `.agents/rules/`, las 7 skills canónicas en `.agents/skills/` y los scripts operativos.*
+
+### Opción B: Clonar como Plantilla de Inicio (Proyecto Nuevo)
+Para iniciar un nuevo proyecto con el framework preconfigurado:
+```bash
+# Clonar el repositorio
+git clone https://github.com/favioCesarJuan/STNG-framework.git mi-proyecto-enterprise
+cd mi-proyecto-enterprise
+
+# Inicializar scripts y permisos
+bash scripts/setup-environment.sh
+```
+
+### Opción C: Integración Manual
+Si preferís control manual explícito:
+```bash
+git clone --depth 1 https://github.com/favioCesarJuan/STNG-framework.git /tmp/stng
+cp -r /tmp/stng/.agents ./
+cp -r /tmp/stng/scripts ./
+cp /tmp/stng/templates/Agents.es.md ./Agents.md
+cp /tmp/stng/templates/rules.es.md ./rules.md
+rm -rf /tmp/stng
+chmod +x scripts/*.sh .agents/hooks/*.js
+```
+
+---
+
+## 🚀 Inicio Rápido y Verificación
 
 ### 1. Comprobar los Hooks
 ```bash
