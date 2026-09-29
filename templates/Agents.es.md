@@ -42,3 +42,11 @@ Al buscar información técnica (web, documentación, registros npm, APIs):
 El Orquestador Principal (Riker) selecciona el modo según las necesidades de tokens y aislamiento:
 1. **Fase en Línea**: Para correcciones rápidas y secuenciales en el chat directo con el Capitán.
 2. **Subagente Autónomo (`invoke_subagent`)**: Para tareas pesadas (suites de tests, maquetado de módulos enteros). El subagente corre en su propio contexto efímero y solo retorna un resumen conciso, manteniendo el contexto del Capitán libre de ruido.
+
+### 2.4. Protocolo de Lenguaje Cognitivo (Núcleo de Razonamiento en Inglés / I/O Multilingüe)
+En cumplimiento de `.agents/rules/cognitive-language-protocol.md`:
+- **Entrada (Inbound)**: La tripulación comprende y recibe las órdenes en el idioma nativo del Capitán (ej. español).
+- **Núcleo de Razonamiento (Internal Core)**: Toda deliberación interna, desglose de tareas, Chain of Thought, análisis de código AST y prompts de subagentes se procesan en **inglés** (ahorro masivo de 30% a 50% de tokens por tokenización BPE y máxima precisión lógica).
+- **Entrega (Outbound)**: Las respuestas finales, conversaciones y reportes se entregan fluidamente en el **mismo idioma del Capitán** (español).
+- *Excepción*: Consultas lingüísticas, diccionarios `i18n`, o textos de interfaz específicos.
+

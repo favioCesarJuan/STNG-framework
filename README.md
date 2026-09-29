@@ -92,13 +92,14 @@ Located in `.agents/hooks/` and registered in `.agents/hooks.json`:
 
 ---
 
-## 💰 Token Economics & Optimization (The 5 Layers)
+## 💰 Token Economics & Optimization (The 6 Layers)
 
 1. **Asymmetric 80/20 Routing**: Gemini 3.8 Flash executes 80% of routine mechanics (tests, linters, log parsers); Gemini 3.1 Pro handles high-order reasoning.
 2. **Lazy Loading**: Skills are injected strictly on-demand per officer domain.
 3. **Context Quarantine**: Heavy multi-turn test/lint loops execute in ephemeral subagents (`invoke_subagent`), returning a clean 5-line summary to the Captain's thread.
 4. **Knowledge Graph Scoping**: Feeds only affected code snippets into prompts instead of loading entire files.
 5. **Circuit Breakers**: Intercepts failing autocorrection loops after 3 attempts, escalating cleanly to the Captain.
+6. **Cognitive Language Protocol (30% to 50% Token Savings)**: Understands and responds in the Captain's native language (e.g. Spanish), while conducting internal Chain-of-Thought, AST parsing, and subagent delegations in **English** to exploit BPE tokenizer compression.
 
 ---
 

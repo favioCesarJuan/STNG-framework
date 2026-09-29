@@ -43,6 +43,13 @@ The Lead Orchestrator (Riker) selects execution modality based on token and isol
 1. **In-Line Persona Phase**: For quick, sequential updates. Riker channels the officer's perspective directly in the main conversation.
 2. **Autonomous Subagent (`invoke_subagent`)**: For large tasks (running long test suites, drafting entire multi-component UI screens). Subagents execute in isolated context windows and report back concise summaries, preventing context pollution.
 
+### 2.4. Cognitive Language Protocol (English Reasoning Core / Multilingual I/O)
+Enforces `.agents/rules/cognitive-language-protocol.md`:
+- **Inbound**: The crew receives prompts in the Captain's native language (e.g. Spanish).
+- **Reasoning Core**: Internal deliberation, Chain of Thought, code AST analysis, and subagent prompts are processed in **English** (saving 30-50% in token overhead and maximizing logical precision).
+- **Outbound**: Final responses and reports are mirrored back in the Captain's chosen language (Spanish).
+- *Exception*: Linguistic analysis, translation tasks, and copywriting work directly in the target language.
+
 ---
 
 ## 🛡️ 3. Deterministic Hook Integration

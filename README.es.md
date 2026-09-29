@@ -92,13 +92,14 @@ Ubicados en `.agents/hooks/` y declarados en `.agents/hooks.json`:
 
 ---
 
-## 💰 Control y Optimización de Tokens (5 Niveles)
+## 💰 Control y Optimización de Tokens (6 Niveles)
 
 1. **Enrutamiento Asimétrico 80/20**: Gemini 3.8 Flash ejecuta el 80% de la mecánica rutinaria; Gemini 3.1 Pro razona a nivel estratégico.
 2. **Carga Perezosa (Lazy Loading)**: Solo se inyecta en el prompt la skill del oficial que está operando en esa fase.
 3. **Cuarentena en Subagentes**: Las iteraciones largas de linters o tests corren en subagentes efímeros (`invoke_subagent`), devolviendo solo un reporte limpio de 5 líneas al chat del Capitán.
 4. **Scoping por Grafo**: Se inyectan únicamente los fragmentos de código afectados en lugar de archivos completos.
 5. **Circuit Breakers**: Corta bucles de autocorrección que fallen 3 veces consecutivas, escalando limpiamente al Capitán.
+6. **Protocolo de Lenguaje Cognitivo (Ahorro del 30% al 50% de Tokens)**: Comprende y responde en el idioma nativo del Capitán (ej. español), pero ejecuta todo el Chain of Thought, análisis AST y prompts de subagentes en **inglés** para aprovechar al máximo la eficiencia del tokenizador BPE.
 
 ---
 

@@ -63,6 +63,12 @@
     "preferFlashForMechanics": true,
     "quarantineContextInSubagents": true,
     "lazyLoadSkills": true,
-    "circuitBreakerMaxRetries": 3
+    "circuitBreakerMaxRetries": 3,
+    "cognitiveLanguageProtocol": {
+      "enabled": true,
+      "reasoningCore": "en",
+      "ioLanguage": "auto_detect_mirror",
+      "tokenSavingsEstimate": "30-50%"
+    }
   }
 }
