@@ -12,7 +12,7 @@
 
 ---
 
-🌐 **Idiomas:** [English (Default)](README.md) | **Español**
+🌐 **Idiomas:** [English (Default)](README.md) | **Español** | 📖 **[MANUAL.md (Guía Operativa Universal)](MANUAL.md)**
 
 ---
 

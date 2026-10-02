@@ -82,6 +82,32 @@ if [ ! -f "rules.md" ]; then
   cp "$TEMP_DIR/templates/rules.md" ./rules.md
 fi
 
+# Universal AI Bridge Files (Claude, Cursor, Windsurf, Copilot, Manual)
+if [ ! -f "MANUAL.md" ]; then
+  echo -e "📖 Setting up universal MANUAL.md..."
+  cp "$TEMP_DIR/MANUAL.md" ./MANUAL.md
+fi
+
+if [ ! -f "CLAUDE.md" ]; then
+  echo -e "🤖 Setting up CLAUDE.md for Anthropic Claude..."
+  cp "$TEMP_DIR/templates/CLAUDE.md" ./CLAUDE.md
+fi
+
+if [ ! -f ".cursorrules" ]; then
+  echo -e "🎯 Setting up .cursorrules for Cursor IDE..."
+  cp "$TEMP_DIR/templates/.cursorrules" ./.cursorrules
+fi
+
+if [ ! -f ".windsurfrules" ]; then
+  echo -e "🏄 Setting up .windsurfrules for Windsurf..."
+  cp "$TEMP_DIR/templates/.windsurfrules" ./.windsurfrules
+fi
+
+if [ ! -f ".copilot-instructions.md" ]; then
+  echo -e "🐙 Setting up .copilot-instructions.md for GitHub Copilot..."
+  cp "$TEMP_DIR/templates/.copilot-instructions.md" ./.copilot-instructions.md
+fi
+
 if [ "$ALLOW_TAILWIND" = true ]; then
   echo "export ALLOW_TAILWIND=true" >> .agents/.env 2>/dev/null || true
 fi

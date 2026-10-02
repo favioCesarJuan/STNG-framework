@@ -12,7 +12,7 @@
 
 ---
 
-🌐 **Languages:** **English (Default)** | [Español](README.es.md)
+🌐 **Languages:** **English (Default)** | [Español](README.es.md) | 📖 **[MANUAL.md (Universal Operational Guide)](MANUAL.md)**
 
 ---
 
@@ -107,6 +107,22 @@ Located in `.agents/hooks/` and registered in `.agents/hooks.json`:
 ---
 
 ---
+
+---
+
+## 🌉 Universal AI Tooling Bridges (Beyond Gemini)
+
+If your environment or team uses an AI coding assistant other than Gemini (or one that doesn't natively read `Agents.md`), STNG-Framework automatically generates targeted instruction bridges:
+
+| File | Target AI Engine / Tool | Purpose |
+| :--- | :--- | :--- |
+| **[`MANUAL.md`](MANUAL.md)** | **Universal / Human & Any LLM** | Comprehensive master operating manual and rules bridge. |
+| **[`CLAUDE.md`](CLAUDE.md)** | **Anthropic Claude Code & Desktop** | Project directives, TDD commands, and First Officer persona. |
+| **[`.cursorrules`](.cursorrules)** | **Cursor IDE & Composer** | Persistent code health, Ponytail minimalism, and no-polling rules. |
+| **[`.windsurfrules`](.windsurfrules)** | **Windsurf (Cascade)** | Engineering boundaries and Starfleet deterministic guardrails. |
+| **[`.copilot-instructions.md`](.copilot-instructions.md)** | **GitHub Copilot** | Inline code generation guidelines and test requirements. |
+| **[`rules.md`](rules.md)** | **Local Models / Ollama / Roo Code / Cline** | Standard markdown directives without tooling dependencies. |
+| **[`Agents.md`](Agents.md)** | **Gemini CLI / Antigravity** | Starfleet crew hierarchy and deterministic model hooks. |
 
 ## 💻 Deterministic Hooks in Action (Code Snippets)
 
