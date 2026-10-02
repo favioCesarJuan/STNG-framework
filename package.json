@@ -1,10 +1,11 @@
 {
   "name": "stng-framework",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Hierarchical Multi-Agent Governance Framework inspired by Star Trek: TNG. Features deterministic model hooks, knowledge graph cascade evaluation, Ponytail minimalism, and enterprise-grade guardrails.",
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "init": "node ./bin/stng.js init",
     "test": "node --test test/**/*.test.js",
     "shield:test": "node .agents/hooks/worf-security-shield.js --test",
     "health:check": "node .agents/hooks/crusher-health-check.js",
@@ -31,5 +32,9 @@
   "engines": {
     "node": ">=18.0.0"
   },
-  "packageManager": "pnpm@9.15.0"
+  "packageManager": "pnpm@9.15.0",
+  "bin": {
+    "stng": "./bin/stng.js",
+    "stng-framework": "./bin/stng.js"
+  }
 }

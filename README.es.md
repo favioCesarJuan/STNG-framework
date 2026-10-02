@@ -117,7 +117,7 @@ curl -fsSL https://raw.githubusercontent.com/favioCesarJuan/STNG-framework/main/
 ```
 *Este comando instala automáticamente `.agents/hooks/`, `.agents/rules/`, las 7 skills canónicas en `.agents/skills/` y los scripts operativos.*
 
-### Opción B: Clonar como Plantilla de Inicio (Proyecto Nuevo)
+### Opción C: Clonar como Plantilla de Inicio (Proyecto Nuevo)
 Para iniciar un nuevo proyecto con el framework preconfigurado:
 ```bash
 # Clonar el repositorio
@@ -128,7 +128,7 @@ cd mi-proyecto-enterprise
 bash scripts/setup-environment.sh
 ```
 
-### Opción C: Integración Manual
+### Opción D: Integración Manual
 Si preferís control manual explícito:
 ```bash
 git clone --depth 1 https://github.com/favioCesarJuan/STNG-framework.git /tmp/stng

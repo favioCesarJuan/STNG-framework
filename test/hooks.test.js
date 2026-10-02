@@ -16,6 +16,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
+import { execSync } from 'node:child_process';
 import { evaluateSecurity } from '../.agents/hooks/worf-security-shield.js';
 import { diagnoseFileContent, HEALTH_RULES } from '../.agents/hooks/crusher-health-check.js';
 import { appendLogEntry, calculateStardate } from '../.agents/hooks/captains-log-writer.js';
@@ -168,5 +169,35 @@ describe('🌌 Cascade Evaluator (Downstream Impact Scoping)', () => {
     const changed = ['apps/api/src/modules/auth.controller.ts'];
     const affected = calculateAffectedNodes(changed);
     assert.deepEqual(affected, ['apps/api']);
+  });
+});
+
+describe('🚀 Unified CLI Initializer (bin/stng.js)', () => {
+  const tmpCliTarget = path.resolve('.tmp-cli-verify');
+
+  it('should initialize a complete project with all universal AI bridges', () => {
+    fs.mkdirSync(tmpCliTarget, { recursive: true });
+    
+    // Run CLI init
+    const binScript = path.resolve('bin/stng.js');
+    execSync(`node "${binScript}" init --provider=openai`, { cwd: tmpCliTarget, stdio: 'ignore' });
+
+    // Verify presence of all unified files
+    assert.ok(fs.existsSync(path.join(tmpCliTarget, 'MANUAL.md')));
+    assert.ok(fs.existsSync(path.join(tmpCliTarget, 'CLAUDE.md')));
+    assert.ok(fs.existsSync(path.join(tmpCliTarget, '.cursorrules')));
+    assert.ok(fs.existsSync(path.join(tmpCliTarget, '.windsurfrules')));
+    assert.ok(fs.existsSync(path.join(tmpCliTarget, '.copilot-instructions.md')));
+    assert.ok(fs.existsSync(path.join(tmpCliTarget, 'Agents.md')));
+    assert.ok(fs.existsSync(path.join(tmpCliTarget, 'rules.md')));
+    assert.ok(fs.existsSync(path.join(tmpCliTarget, '.agents/hooks/worf-security-shield.js')));
+    assert.ok(fs.existsSync(path.join(tmpCliTarget, '.agents/hooks/crusher-health-check.js')));
+
+    // Verify configured active provider
+    const cfg = JSON.parse(fs.readFileSync(path.join(tmpCliTarget, 'config/models.config.json'), 'utf-8'));
+    assert.equal(cfg.activeProvider, 'openai');
+
+    // Clean up
+    fs.rmSync(tmpCliTarget, { recursive: true, force: true });
   });
 });

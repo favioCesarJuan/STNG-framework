@@ -218,14 +218,24 @@ STNG-framework/
 
 Choose the installation method suited to your workflow:
 
-### Option A: One-Line Installer (Recommended for Existing Repositories)
-To adopt STNG-Framework into an existing project or monorepo, run this command in your repository root:
+### Option A: Unified CLI Command (Recommended)
+Bootstrap or adopt the complete Starfleet governance and universal AI bridges in any project with a single command:
+```bash
+# Run directly via npx / pnpm dlx (Zero installation required)
+npx stng init
+
+# Or pre-configure your primary AI assistant and style preferences:
+npx stng init --provider=claude
+npx stng init --provider=openai --allow-tailwind
+```
+
+### Option B: One-Line Shell Installer
 ```bash
 curl -fsSL https://raw.githubusercontent.com/favioCesarJuan/STNG-framework/main/install.sh | bash
 ```
 *This installs `.agents/hooks/`, `.agents/rules/`, the 7 canonical skills in `.agents/skills/`, and operational scripts.*
 
-### Option B: Clone as a Fresh Starter Kit
+### Option C: Clone as a Fresh Starter Kit
 To bootstrap a new project with the framework pre-configured:
 ```bash
 # Clone the repository
@@ -236,7 +246,7 @@ cd my-enterprise-project
 bash scripts/setup-environment.sh
 ```
 
-### Option C: Manual Drop-In
+### Option D: Manual Drop-In
 If you prefer explicit control:
 ```bash
 git clone --depth 1 https://github.com/favioCesarJuan/STNG-framework.git /tmp/stng
