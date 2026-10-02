@@ -1,5 +1,8 @@
 # 🛸 STNG-Framework: Hierarchical Multi-Agent Governance Engine
 
+[![CI: Tests](https://github.com/favioCesarJuan/STNG-framework/actions/workflows/ci.yml/badge.svg)](https://github.com/favioCesarJuan/STNG-framework/actions/workflows/ci.yml)
+[![Node: >=18.0.0](https://img.shields.io/badge/Node-%3E%3D18.0.0-green.svg)](https://nodejs.org)
+[![Package Manager: pnpm](https://img.shields.io/badge/pnpm-recommended-orange.svg)](https://pnpm.io)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Framework: Antigravity](https://img.shields.io/badge/Runtime-Antigravity%20%7C%20Gemini%20CLI-purple.svg)](https://ai.google.dev)
 [![Architecture: Hexagonal](https://img.shields.io/badge/Architecture-Hexagonal%20Monorepo-emerald.svg)](#architecture)
@@ -103,6 +106,65 @@ Located in `.agents/hooks/` and registered in `.agents/hooks.json`:
 
 ---
 
+---
+
+## 💻 Deterministic Hooks in Action (Code Snippets)
+
+Unlike standard natural language prompts that can be ignored by an LLM under heavy context load, STNG hooks are **executable Node.js gatekeepers**:
+
+### 1. Worf Security Shield (`.agents/hooks/worf-security-shield.js`)
+Intercepts shell executions before they reach the OS, blocking destructive actions and forbidden command patterns:
+```javascript
+export function evaluateSecurity(payload = {}) {
+  const { tool = '', args = {} } = payload;
+  if (tool === 'run_command' || tool === 'bash') {
+    const cmd = args.CommandLine || args.command || '';
+    for (const pattern of PROHIBITED_SHELL_PATTERNS) {
+      if (pattern.test(cmd)) {
+        return {
+          allowed: false,
+          reason: `🚨 [WORF SECURITY SHIELD ACTIVATED]: Prohibited command pattern detected: "${pattern.source}". Command aborted.`
+        };
+      }
+    }
+  }
+  return { allowed: true };
+}
+```
+
+### 2. Dr. Crusher Health Check (`.agents/hooks/crusher-health-check.js`)
+Validates clean code, checks for forbidden continuous polling (`setInterval`), and enforces styling hygiene adaptively:
+```javascript
+export function diagnoseFileContent(filePath, content, options = {}) {
+  const issues = [];
+  const allowTailwind = options.allowTailwind ?? (process.env.ALLOW_TAILWIND === 'true');
+
+  for (const rule of HEALTH_RULES) {
+    if (rule.id === 'NO_TAILWIND_IMPORT' && allowTailwind) continue;
+    if (rule.regex.test(content)) {
+      issues.push({ ruleId: rule.id, message: rule.message, severity: rule.severity, file: filePath });
+    }
+  }
+  return issues;
+}
+```
+
+---
+
+## 🤖 Multi-Model Provider Architecture
+
+While tuned for the Gemini Flash/Pro asymmetric ratio by default, STNG-Framework seamlessly supports **any frontier or local model** via `config/models.config.json`:
+
+| Provider | High-Order Reasoning (80% crew) | Fast Economy (Wesley / CI / Linters) | Default Context Budget |
+| :--- | :--- | :--- | :--- |
+| **Google Gemini** | Gemini 3.1 Pro | Gemini 3.8 Flash | 1,000,000 tokens |
+| **Anthropic Claude** | Claude 3.5 / 3.7 Sonnet | Claude 3.5 Haiku | 200,000 tokens |
+| **OpenAI** | o1 / o3-mini | GPT-4o-mini | 200,000 tokens |
+| **DeepSeek** | DeepSeek-R1 | DeepSeek-V3 | 64,000 tokens |
+| **Local Ollama / vLLM** | Qwen 2.5 Coder 72B / 32B | Qwen 2.5 Coder 7B | 32,768 tokens (Quarantine Mode) |
+
+---
+
 ## 📂 Repository Layout
 
 ```
@@ -174,7 +236,14 @@ chmod +x scripts/*.sh .agents/hooks/*.js
 
 ## 🚀 Quick Start & Verification
 
-### 1. Test All Hooks
+### 1. Run Automated Test Suite (Native node:test)
+```bash
+# Run the complete test suite (Zero dependencies required)
+pnpm test
+# Or: node --test test/**/*.test.js
+```
+
+### 2. Test Individual Hooks
 ```bash
 # Verify Worf Tactical Security Shield
 pnpm run shield:test

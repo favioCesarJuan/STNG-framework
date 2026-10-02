@@ -1,0 +1,36 @@
+name: 🛸 STNG-Framework Tactical CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  verify:
+    name: Starfleet Deterministic Test Matrix
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
+
+    steps:
+      - name: 🚀 Checkout Flagship Repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: 🛡️ Run Native Automated Hook Test Suite
+        run: node --test test/**/*.test.js
+
+      - name: 🩺 Run Dr. Crusher Health Diagnostic
+        run: node .agents/hooks/crusher-health-check.js --test
+
+      - name: 🛡️ Verify Worf Tactical Security Shield
+        run: node .agents/hooks/worf-security-shield.js --test
+
+      - name: 📜 Test Captain's Log Telemetry Ledger
+        run: node .agents/hooks/captains-log-writer.js --test

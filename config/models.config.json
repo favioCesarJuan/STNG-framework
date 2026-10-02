@@ -1,8 +1,43 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema#",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "framework": "STNG-Framework",
-  "description": "Asymmetric Model Allocation Policy (Flash vs. Pro 80/20 Rule)",
+  "description": "Multi-Provider Asymmetric Model Allocation Policy with Context Budgeting",
+  "activeProvider": "auto",
+  "providers": {
+    "google": {
+      "name": "Google Gemini",
+      "highReasoningModel": "Gemini 3.1 Pro",
+      "fastEconomyModel": "Gemini 3.8 Flash",
+      "contextWindow": 1000000
+    },
+    "anthropic": {
+      "name": "Anthropic Claude",
+      "highReasoningModel": "Claude 3.5 Sonnet",
+      "fastEconomyModel": "Claude 3.5 Haiku",
+      "contextWindow": 200000
+    },
+    "openai": {
+      "name": "OpenAI",
+      "highReasoningModel": "o1 / o3-mini",
+      "fastEconomyModel": "GPT-4o-mini",
+      "contextWindow": 200000
+    },
+    "deepseek": {
+      "name": "DeepSeek",
+      "highReasoningModel": "DeepSeek-R1",
+      "fastEconomyModel": "DeepSeek-V3",
+      "contextWindow": 64000
+    },
+    "local_ollama": {
+      "name": "Local Ollama / vLLM",
+      "highReasoningModel": "Qwen 2.5 Coder 72B / 32B",
+      "fastEconomyModel": "Qwen 2.5 Coder 7B",
+      "contextWindow": 32768,
+      "quarantineContextInSubagents": true,
+      "maxSnippetLines": 50
+    }
+  },
   "roles": {
     "Jean-Luc Picard": {
       "nature": "HUMAN",
@@ -11,56 +46,60 @@
     },
     "William T. Riker": {
       "nature": "AI_AGENT",
-      "model": "Gemini 3.1 Pro",
-      "fallbackModel": "Gemini 3.8 Flash",
+      "tier": "HIGH_REASONING",
+      "defaultModel": "Gemini 3.1 Pro / Claude 3.5 Sonnet",
       "purpose": "Lead AI orchestrator, multi-step coordination, subagent dispatch, checklist management."
     },
     "Lt. Cmdr. Data": {
       "nature": "AI_AGENT",
-      "model": "Gemini 3.1 Pro",
+      "tier": "HIGH_REASONING",
+      "defaultModel": "Gemini 3.1 Pro / DeepSeek-R1",
       "purpose": "Operations, formal algorithms, FSMs, mathematical domain models, knowledge graph analysis."
     },
     "Lt. Cmdr. Geordi La Forge": {
       "nature": "AI_AGENT",
-      "model": "Gemini 3.1 Pro",
+      "tier": "HIGH_REASONING",
+      "defaultModel": "Gemini 3.1 Pro / Claude 3.5 Sonnet",
       "purpose": "Architecture lead, monorepo design, database modeling, technical mentorship for the Captain."
     },
     "Lt. Cmdr. Worf": {
       "nature": "AI_AGENT",
-      "model": "Gemini 3.1 Pro",
-      "fallbackModel": "Gemini 3.8 Flash",
+      "tier": "HIGH_REASONING",
+      "defaultModel": "Gemini 3.1 Pro / Claude 3.5 Sonnet",
       "purpose": "Security guardrails, input validation, Semgrep static analysis, Strix Red Teaming, skill vetting."
     },
     "Counselor Deanna Troi": {
       "nature": "AI_AGENT",
-      "model": "Gemini 3.1 Pro",
-      "fallbackModel": "Gemini 3.8 Flash",
+      "tier": "HIGH_REASONING",
+      "defaultModel": "Gemini 3.1 Pro / Claude 3.5 Sonnet",
       "purpose": "Design system, CSS Modules, StyleSheet, Apple HIG, micro-interactions, WCAG AAA accessibility."
     },
     "Dr. Beverly Crusher": {
       "nature": "AI_AGENT",
-      "model": "Gemini 3.1 Pro",
-      "fallbackModel": "Gemini 3.8 Flash",
+      "tier": "HIGH_REASONING",
+      "defaultModel": "Gemini 3.1 Pro / Claude 3.5 Sonnet",
       "purpose": "Medical code health, Ponytail minimalism, anti-bloat auditing, type-safety diagnostics."
     },
     "Ensign Wesley Crusher": {
       "nature": "AI_AGENT",
-      "model": "Gemini 3.8 Flash",
-      "purpose": "Fast test execution, repetitive scripts, compiler passes, Maestro E2E, Vitest runners."
+      "tier": "FAST_ECONOMY",
+      "defaultModel": "Gemini 3.8 Flash / Claude 3.5 Haiku / Qwen 7B",
+      "purpose": "Fast test execution, repetitive scripts, compiler passes, Maestro E2E, Vitest/pnpm runners."
     },
     "Computer": {
       "nature": "RUNTIME",
-      "model": "Deterministic Shell",
+      "model": "Deterministic Shell (Bash)",
       "purpose": "Raw compiler logs, execution metrics, exit codes, process management."
     },
     "Q (The Q Continuum)": {
       "nature": "META_AGENT",
-      "model": "Gemini 3.1 Pro",
+      "tier": "HIGH_REASONING",
+      "defaultModel": "Gemini 3.1 Pro / o1 / Claude 3.5 Sonnet",
       "purpose": "Omniscient external evaluation, timeline audits, bias challenge, chaos engineering trials."
     }
   },
   "tokenOptimizationPolicy": {
-    "preferFlashForMechanics": true,
+    "preferFastEconomyForMechanics": true,
     "quarantineContextInSubagents": true,
     "lazyLoadSkills": true,
     "circuitBreakerMaxRetries": 3,

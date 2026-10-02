@@ -9,6 +9,9 @@
 
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+FRAMEWORK_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -28,8 +31,8 @@ echo -e "${CYAN}${BOLD}🛡️  Lt. Cmdr. Worf has been summoned to audit skill:
 echo -e "Target path for audit: ${BOLD}$SKILL_SOURCE${NC}"
 echo -e "------------------------------------------------------------"
 
-# Run our JavaScript deterministic lifecycle auditor
-node .agents/hooks/skill-lifecycle-auditor.js "$SKILL_SOURCE"
+# Run our JavaScript deterministic lifecycle auditor via absolute root
+node "$FRAMEWORK_ROOT/.agents/hooks/skill-lifecycle-auditor.js" "$SKILL_SOURCE"
 
 echo -e "${GREEN}${BOLD}✅ [WORF]: Skill '$SKILL_NAME' passed tactical security evaluation.${NC}"
 exit 0

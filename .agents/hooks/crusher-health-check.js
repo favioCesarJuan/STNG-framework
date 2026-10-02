@@ -46,10 +46,14 @@ export const HEALTH_RULES = [
  * @param {string} content
  * @returns {Array<{ ruleId: string, message: string, severity: string, file: string }>}
  */
-export function diagnoseFileContent(filePath, content) {
+export function diagnoseFileContent(filePath, content, options = {}) {
   const issues = [];
+  const allowTailwind = options.allowTailwind ?? (process.env.ALLOW_TAILWIND === 'true');
 
   for (const rule of HEALTH_RULES) {
+    if (rule.id === 'NO_TAILWIND_IMPORT' && allowTailwind) {
+      continue; // Skip Tailwind prohibition if project allows it
+    }
     if (rule.regex.test(content)) {
       issues.push({
         ruleId: rule.id,
@@ -123,11 +127,12 @@ function runSelfTest() {
   }
 }
 
-// Hook runner
-if (process.argv.includes('--test')) {
-  runSelfTest();
-} else {
-  // If target files provided as arguments, scan them
+// Hook runner (only execute CLI when run directly)
+if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(new URL(import.meta.url).pathname)) {
+  if (process.argv.includes('--test')) {
+    runSelfTest();
+  } else {
+    // If target files provided as arguments, scan them
   const filesToScan = process.argv.slice(2).filter(f => !f.startsWith('--') && fs.existsSync(f));
 
   let totalIssues = [];
@@ -155,4 +160,5 @@ if (process.argv.includes('--test')) {
     console.log(JSON.stringify({ healthy: true, issues: [] }));
     process.exit(0);
   }
+}
 }

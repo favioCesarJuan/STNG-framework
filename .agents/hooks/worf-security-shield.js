@@ -8,6 +8,7 @@
  * ==============================================================================
  */
 
+import path from 'node:path';
 import process from 'node:process';
 
 // Dangerous patterns that violate Starfleet Security Protocol Omega
@@ -119,8 +120,9 @@ function runSelfTest() {
   }
 }
 
-// CLI / Hook Execution entrypoint
-if (process.argv.includes('--test')) {
+// CLI / Hook Execution entrypoint (only run when invoked as main script)
+if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(new URL(import.meta.url).pathname)) {
+  if (process.argv.includes('--test')) {
   runSelfTest();
 } else {
   // Read hook input from stdin if piped
@@ -150,4 +152,5 @@ if (process.argv.includes('--test')) {
       process.exit(0);
     }
   });
+}
 }
