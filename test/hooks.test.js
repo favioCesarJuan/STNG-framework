@@ -21,7 +21,9 @@ import { evaluateSecurity } from '../.agents/hooks/worf-security-shield.js';
 import { diagnoseFileContent, HEALTH_RULES } from '../.agents/hooks/crusher-health-check.js';
 import { appendLogEntry, calculateStardate } from '../.agents/hooks/captains-log-writer.js';
 import { auditSkillPath } from '../.agents/hooks/skill-lifecycle-auditor.js';
-import { calculateAffectedNodes } from '../.agents/hooks/cascade-evaluator.js';
+import { calculateAffectedNodes, discoverWorkspaceTopology } from '../.agents/hooks/cascade-evaluator.js';
+import { evaluateCircuit, resetCircuit } from '../.agents/hooks/circuit-breaker.js';
+import { displayLogStats } from '../bin/stng.js';
 
 describe('🛡️ Lt. Cmdr. Worf Tactical Security Shield (preToolUse)', () => {
   it('should block destructive rm -rf commands targeting root or wildcard', () => {
@@ -197,7 +199,106 @@ describe('🚀 Unified CLI Initializer (bin/stng.js)', () => {
     const cfg = JSON.parse(fs.readFileSync(path.join(tmpCliTarget, 'config/models.config.json'), 'utf-8'));
     assert.equal(cfg.activeProvider, 'openai');
 
+    // Verify providers.json deployment
+    assert.ok(fs.existsSync(path.join(tmpCliTarget, 'config/providers.json')));
+
     // Clean up
     fs.rmSync(tmpCliTarget, { recursive: true, force: true });
+  });
+});
+
+describe('⚡ Worf Circuit Breaker Guardrail (preToolUse)', () => {
+  const tmpCircuitDir = path.resolve('.tmp-circuit-test');
+
+  it('should track repeated edits and trip when exceeding max threshold', () => {
+    fs.mkdirSync(tmpCircuitDir, { recursive: true });
+
+    const payload = {
+      tool: 'replace_file_content',
+      args: { TargetFile: 'src/services/PaymentService.ts' }
+    };
+
+    // First 4 edits allowed
+    for (let i = 1; i <= 4; i++) {
+      const res = evaluateCircuit(payload, { rootDir: tmpCircuitDir, maxThreshold: 4 });
+      assert.equal(res.allowed, true);
+      assert.equal(res.count, i);
+    }
+
+    // 5th edit must trip circuit breaker
+    const tripRes = evaluateCircuit(payload, { rootDir: tmpCircuitDir, maxThreshold: 4 });
+    assert.equal(tripRes.allowed, false);
+    assert.match(tripRes.reason, /CIRCUIT BREAKER ACTIVATED/);
+
+    // Reset circuit breaker
+    resetCircuit(tmpCircuitDir);
+    const postReset = evaluateCircuit(payload, { rootDir: tmpCircuitDir, maxThreshold: 4 });
+    assert.equal(postReset.allowed, true);
+    assert.equal(postReset.count, 1);
+
+    fs.rmSync(tmpCircuitDir, { recursive: true, force: true });
+  });
+});
+
+describe('🌌 Dynamic Monorepo Topology Discovery', () => {
+  const tmpRepo = path.resolve('.tmp-monorepo-test');
+
+  it('should dynamically build dependency DAG and resolve downstream dependents', () => {
+    fs.mkdirSync(path.join(tmpRepo, 'packages/core-lib'), { recursive: true });
+    fs.mkdirSync(path.join(tmpRepo, 'apps/frontend-app'), { recursive: true });
+    fs.mkdirSync(path.join(tmpRepo, 'apps/backend-api'), { recursive: true });
+
+    fs.writeFileSync(path.join(tmpRepo, 'packages/core-lib/package.json'), JSON.stringify({
+      name: '@space/core-lib'
+    }));
+
+    fs.writeFileSync(path.join(tmpRepo, 'apps/frontend-app/package.json'), JSON.stringify({
+      name: '@space/frontend',
+      dependencies: { '@space/core-lib': 'workspace:*' }
+    }));
+
+    fs.writeFileSync(path.join(tmpRepo, 'apps/backend-api/package.json'), JSON.stringify({
+      name: '@space/api',
+      dependencies: { '@space/core-lib': 'workspace:*' }
+    }));
+
+    const topology = discoverWorkspaceTopology(tmpRepo);
+    assert.ok(topology !== null);
+    assert.equal(topology.dirToName.get('packages/core-lib'), '@space/core-lib');
+
+    // Test cascade resolution
+    const changed = ['packages/core-lib/src/utils.ts'];
+    const affected = calculateAffectedNodes(changed, tmpRepo);
+
+    assert.ok(affected.includes('packages/core-lib'));
+    assert.ok(affected.includes('apps/frontend-app'));
+    assert.ok(affected.includes('apps/backend-api'));
+
+    fs.rmSync(tmpRepo, { recursive: true, force: true });
+  });
+});
+
+describe('📋 Multi-Provider Matrix & Captains Log Telemetry', () => {
+  it('should validate providers.json has all canonical Starfleet providers', () => {
+    const providersPath = path.resolve('config/providers.json');
+    assert.ok(fs.existsSync(providersPath), 'config/providers.json must exist');
+    const p = JSON.parse(fs.readFileSync(providersPath, 'utf-8'));
+
+    assert.ok(p.providers.gemini);
+    assert.ok(p.providers.claude);
+    assert.ok(p.providers.openai);
+    assert.ok(p.providers.deepseek);
+    assert.ok(p.providers.ollama);
+
+    assert.equal(p.providers.gemini.orchestratorModel, 'gemini-3.1-pro-preview');
+    assert.equal(p.providers.claude.orchestratorModel, 'claude-3-7-sonnet');
+    assert.equal(p.providers.deepseek.orchestratorModel, 'deepseek-reasoner');
+  });
+
+  it('should parse and display Captains Log statistics accurately', () => {
+    const stats = displayLogStats(process.cwd());
+    assert.ok(stats !== null);
+    assert.ok(typeof stats.total === 'number');
+    assert.ok(stats.total >= 0);
   });
 });

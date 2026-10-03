@@ -11,6 +11,13 @@
       "description": "Intercepts tool calls to prevent dangerous shell executions, unauthorized writes, and security perimeter breaches."
     },
     {
+      "event": "preToolUse",
+      "name": "circuit-breaker",
+      "path": "./.agents/hooks/circuit-breaker.js",
+      "timeout": 2000,
+      "description": "Monitors edit churn per file to abort runaway token loops and infinite hallucination cascades."
+    },
+    {
       "event": "postInvocation",
       "name": "crusher-health-check",
       "path": "./.agents/hooks/crusher-health-check.js",

@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "version": "1.2.0",
+  "framework": "STNG-Framework",
+  "description": "Multi-Provider Model Matrix with Exact Execution Parameters and Role Mapping",
+  "providers": {
+    "gemini": {
+      "name": "Google Gemini",
+      "envKey": "GEMINI_API_KEY",
+      "orchestratorModel": "gemini-3.1-pro-preview",
+      "mechanicModel": "gemini-3.8-flash",
+      "reasoningEffort": "high",
+      "contextWindow": 1048576,
+      "temperature": {
+        "reasoning": 0.2,
+        "creative": 0.7,
+        "mechanical": 0.0
+      },
+      "roles": {
+        "riker": "gemini-3.1-pro-preview",
+        "data": "gemini-3.1-pro-preview",
+        "geordi": "gemini-3.1-pro-preview",
+        "q": "gemini-3.1-pro-preview",
+        "worf": "gemini-3.8-flash",
+        "crusher": "gemini-3.8-flash",
+        "troi": "gemini-3.8-flash",
+        "wesley": "gemini-3.8-flash"
+      }
+    },
+    "claude": {
+      "name": "Anthropic Claude",
+      "envKey": "ANTHROPIC_API_KEY",
+      "orchestratorModel": "claude-3-7-sonnet",
+      "mechanicModel": "claude-3-5-haiku",
+      "reasoningEffort": "extended_thinking",
+      "contextWindow": 200000,
+      "temperature": {
+        "reasoning": 0.2,
+        "creative": 0.7,
+        "mechanical": 0.0
+      },
+      "roles": {
+        "riker": "claude-3-7-sonnet",
+        "data": "claude-3-7-sonnet",
+        "geordi": "claude-3-7-sonnet",
+        "q": "claude-3-7-sonnet",
+        "worf": "claude-3-5-haiku",
+        "crusher": "claude-3-5-haiku",
+        "troi": "claude-3-5-haiku",
+        "wesley": "claude-3-5-haiku"
+      }
+    },
+    "openai": {
+      "name": "OpenAI",
+      "envKey": "OPENAI_API_KEY",
+      "orchestratorModel": "gpt-4o",
+      "mechanicModel": "gpt-4o-mini",
+      "reasoningEffort": "medium",
+      "contextWindow": 128000,
+      "temperature": {
+        "reasoning": 0.1,
+        "creative": 0.7,
+        "mechanical": 0.0
+      },
+      "roles": {
+        "riker": "gpt-4o",
+        "data": "o3-mini",
+        "geordi": "gpt-4o",
+        "q": "o3-mini",
+        "worf": "gpt-4o-mini",
+        "crusher": "gpt-4o-mini",
+        "troi": "gpt-4o-mini",
+        "wesley": "gpt-4o-mini"
+      }
+    },
+    "deepseek": {
+      "name": "DeepSeek",
+      "envKey": "DEEPSEEK_API_KEY",
+      "orchestratorModel": "deepseek-reasoner",
+      "mechanicModel": "deepseek-chat",
+      "reasoningEffort": "high",
+      "contextWindow": 64000,
+      "temperature": {
+        "reasoning": 0.0,
+        "creative": 0.6,
+        "mechanical": 0.0
+      },
+      "roles": {
+        "riker": "deepseek-reasoner",
+        "data": "deepseek-reasoner",
+        "geordi": "deepseek-reasoner",
+        "q": "deepseek-reasoner",
+        "worf": "deepseek-chat",
+        "crusher": "deepseek-chat",
+        "troi": "deepseek-chat",
+        "wesley": "deepseek-chat"
+      }
+    },
+    "ollama": {
+      "name": "Local Ollama / Air-Gapped",
+      "envKey": "OLLAMA_HOST",
+      "orchestratorModel": "qwen2.5-coder:32b",
+      "mechanicModel": "qwen2.5-coder:7b",
+      "reasoningEffort": "standard",
+      "contextWindow": 32768,
+      "quarantineSubagents": true,
+      "temperature": {
+        "reasoning": 0.1,
+        "creative": 0.7,
+        "mechanical": 0.0
+      },
+      "roles": {
+        "riker": "qwen2.5-coder:32b",
+        "data": "deepseek-r1:8b",
+        "geordi": "qwen2.5-coder:32b",
+        "q": "deepseek-r1:8b",
+        "worf": "qwen2.5-coder:7b",
+        "crusher": "qwen2.5-coder:7b",
+        "troi": "qwen2.5-coder:7b",
+        "wesley": "qwen2.5-coder:7b"
+      }
+    }
+  }
+}

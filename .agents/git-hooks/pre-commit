@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# 🛡️ STNG-FRAMEWORK: DETERMINISTIC GIT PRE-COMMIT SHIELD
+# ==============================================================================
+# Bound via `git config core.hooksPath .agents/git-hooks`
+# Enforces Starfleet security and health standards on staged commits.
+# ==============================================================================
+
+set -e
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+CYAN='\033[0;36m'
+NC='\033[0m'
+BOLD='\033[1m'
+
+echo -e "\n${CYAN}${BOLD}🛸 [STARFLEET DEFENSE PERIMETER]: Running pre-commit validation...${NC}"
+
+# 1. Worf Security Shield
+if [ -f ".agents/hooks/worf-security-shield.js" ]; then
+  node .agents/hooks/worf-security-shield.js --test || {
+    echo -e "${RED}${BOLD}🚨 [WORF]: Pre-commit security verification failed! Commit aborted.${NC}"
+    exit 1
+  }
+fi
+
+# 2. Dr. Crusher Health Check
+if [ -f ".agents/hooks/crusher-health-check.js" ]; then
+  node .agents/hooks/crusher-health-check.js || {
+    echo -e "${RED}${BOLD}🩺 [DR. CRUSHER]: Health check violations found! Fix errors before committing.${NC}"
+    exit 1
+  }
+fi
+
+echo -e "${GREEN}${BOLD}✅ [STARFLEET]: All pre-commit perimeters secured. Proceeding with commit.${NC}\n"
+exit 0

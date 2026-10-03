@@ -13,6 +13,8 @@
     "skills:audit": "bash scripts/install-skill.sh",
     "skills:manage": "bash scripts/manage-skills.sh",
     "log:view": "cat .agents/captains_log.md 2>/dev/null || echo 'No log entries yet.'",
+    "log:stats": "node ./bin/stng.js log --stats",
+    "circuit:reset": "node .agents/hooks/circuit-breaker.js --reset",
     "pre-commit": "bash scripts/pre-commit.sh"
   },
   "keywords": [

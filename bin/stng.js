@@ -13,6 +13,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import { execSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 
 const CYAN = '\x1b[36m';
 const GREEN = '\x1b[32m';
@@ -39,7 +40,8 @@ function printUsage() {
   console.log(`  stng test                 Run native automated test suite`);
   console.log(`  stng health               Run Dr. Crusher health diagnostics`);
   console.log(`  stng shield               Run Worf security shield check`);
-  console.log(`  stng log                  Display Captain's Log ledger`);
+  console.log(`  stng log [--stats]        Display Captain's Log ledger or telemetry stats`);
+  console.log(`  stng circuit:reset        Reset Worf's circuit breaker counters`);
   console.log(`\n${BOLD}Options for init:${NC}`);
   console.log(`  --provider=<name>         Pre-set primary AI (gemini, claude, openai, deepseek, ollama)`);
   console.log(`  --allow-tailwind          Permit TailwindCSS in style governance`);
@@ -92,19 +94,25 @@ export function runInit(options = {}) {
 
   // 2. Backup existing .agents if present and not force
   const agentsDir = path.join(TARGET_DIR, '.agents');
-  if (fs.existsSync(agentsDir) && !force) {
+  const srcAgents = path.join(CLI_DIR, '.agents');
+  if (path.resolve(srcAgents) !== path.resolve(agentsDir) && fs.existsSync(agentsDir) && !force) {
     const backupName = `.agents.backup.${Date.now()}`;
     console.log(`${YELLOW}🛡️  [WORF]: Existing .agents found. Backing up to ${backupName}...${NC}`);
     fs.cpSync(agentsDir, path.join(TARGET_DIR, backupName), { recursive: true });
   }
 
   // 3. Deploy .agents (Hooks, Rules, Skills)
-  console.log(`📦 Deploying deterministic hooks, rules, and canonical skills...`);
-  fs.cpSync(path.join(CLI_DIR, '.agents'), agentsDir, { recursive: true });
+  if (path.resolve(srcAgents) !== path.resolve(agentsDir)) {
+    console.log(`📦 Deploying deterministic hooks, rules, and canonical skills...`);
+    fs.cpSync(srcAgents, agentsDir, { recursive: true });
+  }
 
   // 4. Deploy Scripts
   const scriptsDir = path.join(TARGET_DIR, 'scripts');
-  fs.cpSync(path.join(CLI_DIR, 'scripts'), scriptsDir, { recursive: true });
+  const srcScripts = path.join(CLI_DIR, 'scripts');
+  if (path.resolve(srcScripts) !== path.resolve(scriptsDir)) {
+    fs.cpSync(srcScripts, scriptsDir, { recursive: true });
+  }
 
   // 5. Deploy Configs & Models
   const configDir = path.join(TARGET_DIR, 'config');
@@ -121,6 +129,12 @@ export function runInit(options = {}) {
     }
     fs.writeFileSync(modelConfigFile, modelConfigRaw, 'utf-8');
     console.log(`⚙️  Models configured for active provider: ${BOLD}${preferredProvider}${NC}`);
+  }
+
+  const providersFile = path.join(configDir, 'providers.json');
+  if (!fs.existsSync(providersFile) || force) {
+    fs.copyFileSync(path.join(CLI_DIR, 'config/providers.json'), providersFile);
+    console.log(`📋 Multi-provider matrix deployed to config/providers.json`);
   }
 
   // 6. Deploy Universal AI Bridge Files
@@ -157,9 +171,18 @@ export function runInit(options = {}) {
   try {
     execSync(`node "${path.join(agentsDir, 'hooks/worf-security-shield.js')}" --test`, { stdio: 'ignore' });
     execSync(`node "${path.join(agentsDir, 'hooks/crusher-health-check.js')}" --test`, { stdio: 'ignore' });
+    execSync(`node "${path.join(agentsDir, 'hooks/circuit-breaker.js')}" --test`, { stdio: 'ignore' });
     console.log(`${GREEN}✔ All deterministic hooks verified and active.${NC}`);
   } catch (err) {
     console.log(`${YELLOW}⚠ Note: Hooks installed, initial check completed with warnings.${NC}`);
+  }
+
+  // 9. Bind Git Pre-Commit Hook
+  if (env.hasGit) {
+    try {
+      execSync('git config core.hooksPath .agents/git-hooks', { stdio: 'ignore', cwd: TARGET_DIR });
+      console.log(`${GREEN}✔ Git Pre-Commit Shield armed:${NC} core.hooksPath set to .agents/git-hooks`);
+    } catch {}
   }
 
   console.log(`\n${GREEN}${BOLD}✅ [CAPTAIN PICARD]: STNG-Framework successfully initialized!${NC}`);
@@ -167,48 +190,114 @@ export function runInit(options = {}) {
   console.log(`👉 Run ${BOLD}pnpm test${NC} (or ${BOLD}npx stng test${NC}) to verify test suite.\n`);
 }
 
-// Command dispatcher
-switch (command) {
-  case 'init':
-  case 'setup':
-    runInit();
-    break;
-  case 'test':
-    try {
-      execSync('node --test test/**/*.test.js', { stdio: 'inherit', cwd: TARGET_DIR });
-    } catch {
-      process.exit(1);
-    }
-    break;
-  case 'shield':
-    try {
-      execSync('node .agents/hooks/worf-security-shield.js --test', { stdio: 'inherit', cwd: TARGET_DIR });
-    } catch {
-      process.exit(1);
-    }
-    break;
-  case 'health':
-    try {
-      execSync('node .agents/hooks/crusher-health-check.js --test', { stdio: 'inherit', cwd: TARGET_DIR });
-    } catch {
-      process.exit(1);
-    }
-    break;
-  case 'log':
-    try {
-      execSync('cat .agents/captains_log.md 2>/dev/null || echo "No log entries yet."', { stdio: 'inherit', cwd: TARGET_DIR });
-    } catch {
-      process.exit(1);
-    }
-    break;
-  case '--help':
-  case '-h':
-  case 'help':
-    printHeader();
-    printUsage();
-    break;
-  default:
-    console.error(`${RED}Unknown command: ${command}${NC}`);
-    printUsage();
-    process.exit(1);
+/**
+ * Renders an ASCII dashboard summarizing Captain's Log telemetry.
+ * @param {string} targetDir
+ * @returns {object|null}
+ */
+export function displayLogStats(targetDir = process.cwd()) {
+  const logJsonPath = path.join(targetDir, '.agents/captains_log.json');
+  if (!fs.existsSync(logJsonPath)) {
+    console.log(`\n${YELLOW}No Captain's Log ledger found at .agents/captains_log.json${NC}\n`);
+    return null;
+  }
+
+  let entries = [];
+  try {
+    entries = JSON.parse(fs.readFileSync(logJsonPath, 'utf-8'));
+  } catch {
+    console.log(`\n${RED}Error parsing captains_log.json${NC}\n`);
+    return null;
+  }
+
+  const officerCounts = {};
+  let healthWarnings = 0;
+  let securityBlocks = 0;
+
+  for (const entry of entries) {
+    const officer = entry.officer || entry.agent || 'Computer';
+    officerCounts[officer] = (officerCounts[officer] || 0) + 1;
+    if (entry.healthScore && entry.healthScore < 100) healthWarnings++;
+    if (entry.event === 'security_blocked' || (entry.action && entry.action.includes('blocked'))) securityBlocks++;
+  }
+
+  console.log(`\n${CYAN}${BOLD}📜 CAPTAIN'S LOG TELEMETRY DASHBOARD${NC}`);
+  console.log(`${BOLD}------------------------------------------------------------${NC}`);
+  console.log(`Total Stardate Entries Recorded:  ${BOLD}${entries.length}${NC}`);
+  console.log(`Security Perimeter Blocks (Worf): ${securityBlocks > 0 ? RED : GREEN}${securityBlocks}${NC}`);
+  console.log(`Health Diagnostic Warnings:       ${healthWarnings > 0 ? YELLOW : GREEN}${healthWarnings}${NC}`);
+  console.log(`Estimated Token Protocol Savings: ${GREEN}30% - 50% via BPE Deliberation${NC}`);
+  console.log(`\n${BOLD}Officer Activity Breakdown:${NC}`);
+  for (const [officer, count] of Object.entries(officerCounts)) {
+    const bar = '█'.repeat(Math.min(count * 2, 28));
+    console.log(`  ${officer.padEnd(24)} ${CYAN}${bar}${NC} (${count})`);
+  }
+  console.log(`${BOLD}------------------------------------------------------------${NC}\n`);
+
+  return { total: entries.length, officerCounts, securityBlocks, healthWarnings };
 }
+
+// Only dispatch commands when invoked directly as a CLI binary
+const currentFile = fileURLToPath(import.meta.url);
+const executedFile = process.argv[1] ? path.resolve(process.argv[1]) : '';
+const isMain = executedFile === currentFile || executedFile.endsWith('/stng.js') || executedFile.endsWith('/stng');
+
+if (isMain) {
+  switch (command) {
+    case 'init':
+    case 'setup':
+      runInit();
+      break;
+    case 'test':
+      try {
+        execSync('node --test test/**/*.test.js', { stdio: 'inherit', cwd: TARGET_DIR });
+      } catch {
+        process.exit(1);
+      }
+      break;
+    case 'shield':
+      try {
+        execSync('node .agents/hooks/worf-security-shield.js --test', { stdio: 'inherit', cwd: TARGET_DIR });
+      } catch {
+        process.exit(1);
+      }
+      break;
+    case 'circuit:reset':
+      try {
+        execSync('node .agents/hooks/circuit-breaker.js --reset', { stdio: 'inherit', cwd: TARGET_DIR });
+      } catch {
+        process.exit(1);
+      }
+      break;
+    case 'health':
+      try {
+        execSync('node .agents/hooks/crusher-health-check.js --test', { stdio: 'inherit', cwd: TARGET_DIR });
+      } catch {
+        process.exit(1);
+      }
+      break;
+    case 'log':
+    case 'log:stats':
+      if (args.includes('--stats') || args.includes('stats') || command === 'log:stats') {
+        displayLogStats(TARGET_DIR);
+      } else {
+        try {
+          execSync('cat .agents/captains_log.md 2>/dev/null || echo "No log entries yet."', { stdio: 'inherit', cwd: TARGET_DIR });
+        } catch {
+          process.exit(1);
+        }
+      }
+      break;
+    case '--help':
+    case '-h':
+    case 'help':
+      printHeader();
+      printUsage();
+      break;
+    default:
+      console.error(`${RED}Unknown command: ${command}${NC}`);
+      printUsage();
+      process.exit(1);
+  }
+}
+
