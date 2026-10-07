@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.2.0] - 2026-10-07
+
+### Added
+- **GitHub Security Lab Hardening**: Implemented official security best practices via `gh-secure` (Private Vulnerability Reporting, Secret Scanning Push Protection, Dependabot Alerts & Updates, CodeQL semantic static analysis).
+- **Official Security Policy (`SECURITY.md`)**: Established coordinated disclosure procedures, supported release matrix, and encrypted vulnerability advisory channel.
+- **Universal Operating Manual (`MANUAL.md`)**: Created master operational guide for human developers and any AI tool or platform.
+- **Cross-Platform AI Bridges**: Generated dedicated instruction contracts for Anthropic Claude (`CLAUDE.md`), Cursor IDE (`.cursorrules`), Windsurf (`.windsurfrules`), GitHub Copilot (`.copilot-instructions.md`), and local models (`rules.md`).
+- **Unified Starfleet CLI (`bin/stng.js`)**: Introduced executable `npx stng init` command configuring full governance, models, and bridges in a single step with zero external dependencies.
+
+---
+
 ## [1.1.0] - 2026-10-02
 
 ### Added

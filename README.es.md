@@ -3,6 +3,7 @@
 [![CI: Tests](https://github.com/favioCesarJuan/STNG-framework/actions/workflows/ci.yml/badge.svg)](https://github.com/favioCesarJuan/STNG-framework/actions/workflows/ci.yml)
 [![Node: >=18.0.0](https://img.shields.io/badge/Node-%3E%3D18.0.0-green.svg)](https://nodejs.org)
 [![Gestor: pnpm](https://img.shields.io/badge/pnpm-recomendado-orange.svg)](https://pnpm.io)
+[![GitHub Security Lab](https://img.shields.io/badge/Seguridad-GitHub%20Security%20Lab-blue.svg)](SECURITY.md)
 [![License: MIT](https://img.shields.io/badge/Licencia-MIT-blue.svg)](LICENSE)
 [![Framework: Antigravity](https://img.shields.io/badge/Runtime-Antigravity%20%7C%20Gemini%20CLI-purple.svg)](https://ai.google.dev)
 [![Architecture: Hexagonal](https://img.shields.io/badge/Arquitectura-Monorepo%20Hexagonal-emerald.svg)](#arquitectura)

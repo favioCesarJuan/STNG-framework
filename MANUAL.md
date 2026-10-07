@@ -13,6 +13,7 @@
 5. [Guía de Integración según tu Asistente o Modelo](#5-guía-de-integración-según-tu-asistente)
 6. [Hooks Deterministas y Verificación de Salud](#6-hooks-deterministas)
 7. [Economía de Tokens y Protocolo Cognitivo](#7-economía-de-tokens)
+8. [Blindaje de Seguridad y GitHub Security Lab](#8-blindaje-de-seguridad-y-github-security-lab)
 
 ---
 
@@ -130,4 +131,24 @@ En [`config/models.config.json`](./config/models.config.json) se encuentra la ma
 * **Tareas de Alto Razonamiento (80% de la tripulación)**: Claude 3.5/3.7 Sonnet, Gemini 3.1 Pro, o1, DeepSeek-R1 o Qwen 72B.
 * **Tareas Mecánicas Rápidas (Wesley Crusher / Tests / Linters)**: Gemini 3.8 Flash, Claude 3.5 Haiku, GPT-4o-mini o Qwen 7B.
 
+---
+
+## 8. Blindaje de Seguridad y GitHub Security Lab
+
+STNG-Framework implementa las recomendaciones y directivas de seguridad oficiales de **[GitHub Security Lab](https://github.com/GitHubSecurityLab/gh-secure)** y la división táctica de Starfleet:
+
+1. **Canal Confidencial de Vulnerabilidades**:
+   - Para reportar cualquier vulnerabilidad de forma segura y privada, utiliza el canal de [Security Advisories](https://github.com/favioCesarJuan/STNG-framework/security/advisories/new) en lugar de crear issues públicos.
+2. **Push Protection & Secret Scanning**:
+   - Los commits que contengan tokens, claves privadas o secretos de API son interceptados y rechazados automáticamente antes de incorporarse al historial de Git.
+3. **Dependabot Automatizado**:
+   - Monitoreo en tiempo real de vulnerabilidades en dependencias y generación automática de PRs correctivos.
+4. **CodeQL Semantic Static Analysis**:
+   - Cada commit y pull request es analizado mediante el motor CodeQL en GitHub Actions para detectar inyecciones, fallos lógicos y debilidades de seguridad.
+5. **Worf Security Shield en Tiempo de Ejecución**:
+   - Interceptor pre-ejecución (`worf-security-shield.js`) que bloquea comandos de terminal que puedan comprometer el sistema operativo o destruir datos.
+6. **Política Formal de Seguridad**:
+   - Consulta el archivo [`SECURITY.md`](./SECURITY.md) para conocer las versiones soportadas y el protocolo de triaje.
+
 *Enterprise cleared for warp. Make it so!*
+

@@ -3,6 +3,7 @@
 [![CI: Tests](https://github.com/favioCesarJuan/STNG-framework/actions/workflows/ci.yml/badge.svg)](https://github.com/favioCesarJuan/STNG-framework/actions/workflows/ci.yml)
 [![Node: >=18.0.0](https://img.shields.io/badge/Node-%3E%3D18.0.0-green.svg)](https://nodejs.org)
 [![Package Manager: pnpm](https://img.shields.io/badge/pnpm-recommended-orange.svg)](https://pnpm.io)
+[![GitHub Security Lab](https://img.shields.io/badge/Security-GitHub%20Security%20Lab%20Hardened-blue.svg)](SECURITY.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Framework: Antigravity](https://img.shields.io/badge/Runtime-Antigravity%20%7C%20Gemini%20CLI-purple.svg)](https://ai.google.dev)
 [![Architecture: Hexagonal](https://img.shields.io/badge/Architecture-Hexagonal%20Monorepo-emerald.svg)](#architecture)
@@ -180,6 +181,22 @@ While tuned for the Gemini Flash/Pro asymmetric ratio by default, STNG-Framework
 | **Local Ollama / vLLM** | Qwen 2.5 Coder 72B / 32B | Qwen 2.5 Coder 7B | 32,768 tokens (Quarantine Mode) |
 
 ---
+
+---
+
+## 🛡️ Starfleet Tactical Security Hardening (GitHub Security Lab)
+
+STNG-Framework is hardened following the official security standards of **[GitHub Security Lab](https://github.com/GitHubSecurityLab/gh-secure)**, providing automated defense in depth:
+
+| Security Feature | Operational Status | Defense Domain |
+| :--- | :--- | :--- |
+| **Private Vulnerability Reporting** | **Enabled** | Confidential reporting channel via [Security Advisories](https://github.com/favioCesarJuan/STNG-framework/security/advisories/new). |
+| **Secret Scanning Push Protection** | **Enabled** | Real-time blocking of pushes containing API keys, private keys, or tokens. |
+| **Dependabot Security Alerts** | **Enabled** | Continuous vulnerability surveillance across the entire supply chain. |
+| **Dependabot Automated Updates** | **Enabled** | Automated generation of pull requests to patch vulnerable dependencies. |
+| **CodeQL Code Scanning** | **Enabled** | Automated semantic static analysis via GitHub Actions on PRs and commits. |
+| **Worf Tactical Security Shield** | **Enabled** | Deterministic `preToolUse` interceptor blocking destructive OS command patterns. |
+| **Security Policy** | **Enabled** | Official disclosure and triage process documented in [`SECURITY.md`](SECURITY.md). |
 
 ## 📂 Repository Layout
 
