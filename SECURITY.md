@@ -42,3 +42,6 @@ This repository operates with:
 - **Dependabot Security Alerts & Automated Updates**: Continuous supply chain monitoring.
 - **CodeQL Static Analysis**: Automated AST semantic scanning on pull requests and commits.
 - **Worf Tactical Security Shield (`preToolUse`)**: Deterministic protection against destructive command patterns.
+- **Semgrep AST Guardrails (`scripts/pre-commit.sh`)**: Deterministic static analysis scanning for continuous polling violations, command injections, and credential leaks via `.agents/rules/semgrep-starfleet.yml`.
+- **Node.js Host Runtime CVE Auditor (`scripts/worf-node-audit.js`)**: Automated platform hygiene inspecting active runtime versions against SecurityVulnerability.io advisories and CVE baselines.
+- **NVIDIA SkillSpector Protocol (`scripts/install-skill.sh`)**: Multi-stage skill security auditing guarding against prompt injection overrides, MCP tool poisoning, and secret exfiltration.

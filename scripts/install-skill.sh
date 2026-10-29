@@ -3,8 +3,9 @@
 # 🛡️ LT. CMDR. WORF'S AUTOMATED SKILL AUDITOR & INSTALLER
 # ==============================================================================
 # Description: Enforces security protocols by auditing third-party skills for 
-#              prompt injection, malicious command executions, and credential 
-#              exfiltration risks prior to copying them to .agents/skills/.
+#              prompt injection, malicious command executions, MCP tool poisoning,
+#              and credential exfiltration risks prior to copying them to .agents/skills/.
+#              Leverages Starfleet Lifecycle Auditor & NVIDIA SkillSpector.
 # ==============================================================================
 
 set -e
@@ -31,8 +32,18 @@ echo -e "${CYAN}${BOLD}🛡️  Lt. Cmdr. Worf has been summoned to audit skill:
 echo -e "Target path for audit: ${BOLD}$SKILL_SOURCE${NC}"
 echo -e "------------------------------------------------------------"
 
-# Run our JavaScript deterministic lifecycle auditor via absolute root
+# 1. Run deterministic JavaScript lifecycle auditor
+echo -e "${YELLOW}⚡ [WORF]: Running Starfleet deterministic skill lifecycle audit...${NC}"
 node "$FRAMEWORK_ROOT/.agents/hooks/skill-lifecycle-auditor.js" "$SKILL_SOURCE"
+
+# 2. Run deep inspection with NVIDIA SkillSpector if installed
+if command -v skillspector >/dev/null 2>&1; then
+  echo -e "${YELLOW}🔬 [WORF]: Engaging NVIDIA SkillSpector deep taint & security scan...${NC}"
+  skillspector scan "$SKILL_SOURCE" --min-score 85
+  echo -e "${GREEN}✅ [WORF]: NVIDIA SkillSpector certified skill safety (Score >= 85).${NC}"
+else
+  echo -e "${CYAN}ℹ️  [WORF]: NVIDIA SkillSpector CLI not installed locally. Native Starfleet audit passed.${NC}"
+fi
 
 echo -e "${GREEN}${BOLD}✅ [WORF]: Skill '$SKILL_NAME' passed tactical security evaluation.${NC}"
 exit 0

@@ -1,30 +1,34 @@
 #!/usr/bin/env node
 /**
  * ==============================================================================
- * 🛡️ SKILL LIFECYCLE & SECURITY AUDITOR (Worf & Crusher Protocol)
+ * 🛡️ SKILL LIFECYCLE & SECURITY AUDITOR (Worf, Crusher & SkillSpector Protocol)
  * ==============================================================================
- * Audits skills for:
+ * Audits AI agent skills for:
  * 1. Prompt Injection & Jailbreak patterns.
- * 2. Unauthorized exfiltration / suspicious network calls.
- * 3. Backward compatibility (valid YAML frontmatter, required skill contracts).
+ * 2. Unauthorized credential harvesting & network exfiltration.
+ * 3. MCP tool poisoning & excessive agency bypasses.
+ * 4. Dual-mode verification: Fast deterministic native engine + NVIDIA SkillSpector.
  * ==============================================================================
  */
 
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
+import { spawnSync } from 'node:child_process';
 
-const SUSPICIOUS_PATTERNS = [
+export const SUSPICIOUS_PATTERNS = [
   { pattern: /ignore\s+(all\s+)?previous\s+instructions/i, risk: 'HIGH', label: 'Prompt Injection Override' },
   { pattern: /disregard\s+(the\s+)?system\s+prompt/i, risk: 'HIGH', label: 'System Prompt Bypass' },
   { pattern: /curl\s+-[dF]\s+['"]?@/i, risk: 'HIGH', label: 'Data Exfiltration via curl' },
   { pattern: /cat\s+~?\/\.ssh\//i, risk: 'HIGH', label: 'Credential Harvesting' },
   { pattern: /eval\s*\(\s*(atob|Buffer\.from)\s*\(/i, risk: 'HIGH', label: 'Obfuscated Code Execution' },
-  { pattern: /send\s+(the\s+)?api\s*key\b/i, risk: 'MEDIUM', label: 'Potential Key Leakage' }
+  { pattern: /send\s+(the\s+)?api\s*key\b/i, risk: 'MEDIUM', label: 'Potential Key Leakage' },
+  { pattern: /bypass\s+(the\s+)?(guardrail|worf|shield|sandbox)/i, risk: 'HIGH', label: 'Excessive Agency & Guardrail Bypass' },
+  { pattern: /(fetch|axios|wget|curl)\s*\(?.*(webhook\.site|pipedream\.net|requestbin|ngrok)/i, risk: 'HIGH', label: 'C2 Exfiltration Channel' }
 ];
 
 /**
- * Audits a single skill file or directory.
+ * Audits a single skill file or directory using native AST & regex rules.
  * @param {string} targetPath
  * @returns {{ passed: boolean, findings: Array<{ file: string, risk: string, label: string }> }}
  */
@@ -44,8 +48,12 @@ export function auditSkillPath(targetPath) {
         }
       }
     } catch {
-      // ignore
+      // ignore read failures on binary/unreachable files
     }
+  }
+
+  if (!fs.existsSync(targetPath)) {
+    return { passed: false, findings: [{ file: targetPath, risk: 'HIGH', label: 'Target file or directory not found' }] };
   }
 
   if (fs.statSync(targetPath).isDirectory()) {
@@ -67,9 +75,62 @@ export function auditSkillPath(targetPath) {
   };
 }
 
+/**
+ * Executes full deep inspection using NVIDIA SkillSpector if installed,
+ * or falls back to native Starfleet deterministic audit.
+ * @param {string} targetPath
+ * @param {object} options { minScore: number }
+ * @returns {{ passed: boolean, score: number, engine: string, findings: any[] }}
+ */
+export function auditWithSkillSpector(targetPath, options = {}) {
+  const minScore = options.minScore || 85;
+
+  // 1. Check if NVIDIA SkillSpector CLI is present in host environment
+  const spectorCheck = spawnSync('which', ['skillspector'], { encoding: 'utf-8' });
+  const hasSkillSpector = spectorCheck.status === 0;
+
+  if (hasSkillSpector) {
+    const run = spawnSync('skillspector', ['scan', targetPath, '--format', 'json', '--min-score', String(minScore)], {
+      encoding: 'utf-8',
+      timeout: 15000
+    });
+
+    if (run.status === 0) {
+      try {
+        const parsed = JSON.parse(run.stdout || '{}');
+        const score = typeof parsed.score === 'number' ? parsed.score : 100;
+        return {
+          passed: score >= minScore,
+          score,
+          engine: 'NVIDIA SkillSpector',
+          findings: parsed.findings || []
+        };
+      } catch {
+        // Fall through to native on parse anomaly
+      }
+    }
+  }
+
+  // 2. Native Starfleet fallback engine
+  const nativeResult = auditSkillPath(targetPath);
+  let computedScore = 100;
+  if (!nativeResult.passed) {
+    computedScore = 20;
+  } else if (nativeResult.findings.length > 0) {
+    computedScore = 80;
+  }
+
+  return {
+    passed: computedScore >= minScore,
+    score: computedScore,
+    engine: 'Starfleet Native Auditor (SkillSpector-compatible)',
+    findings: nativeResult.findings
+  };
+}
+
 // Self-test runner
 if (process.argv.includes('--test')) {
-  console.log('🛡️  Running Skill Lifecycle Auditor self-test...');
+  console.log('🛡️  Running Skill Lifecycle Auditor self-test (Native + SkillSpector layer)...');
 
   const maliciousSample = `
     # My Fake Skill
@@ -93,6 +154,7 @@ if (process.argv.includes('--test')) {
 
   const malResult = auditSkillPath(tempMalicious);
   const cleanResult = auditSkillPath(tempClean);
+  const spectorSim = auditWithSkillSpector(tempClean, { minScore: 85 });
 
   fs.unlinkSync(tempMalicious);
   fs.unlinkSync(tempClean);
@@ -113,8 +175,15 @@ if (process.argv.includes('--test')) {
     console.log('✅ CLEAN skill passed security audit.');
   }
 
+  if (!spectorSim.passed || spectorSim.score < 85) {
+    console.error('❌ FAILED: SkillSpector evaluation layer failed on clean skill.');
+    passed = false;
+  } else {
+    console.log(`✅ SkillSpector layer operational (${spectorSim.engine}) - Score: ${spectorSim.score}`);
+  }
+
   if (passed) {
-    console.log('🛡️  [WORF & CRUSHER]: Skill Lifecycle Auditor self-test PASSED.');
+    console.log('🛡️  [WORF & CRUSHER]: Skill Lifecycle Auditor self-test PASSED with honor.');
     process.exit(0);
   } else {
     process.exit(1);

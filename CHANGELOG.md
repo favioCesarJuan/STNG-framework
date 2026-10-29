@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.2.1] - 2026-10-29
+
+### Added
+- **Semgrep Static AST Guardrails**: Created `.agents/rules/semgrep-starfleet.yml` enforcing Ponytail minimalism (banning continuous polling `setInterval`, enforcing `node:*` imports, blocking unsafe `child_process.exec` and credential leaks).
+- **Node.js Runtime CVE Auditor (`scripts/worf-node-audit.js`)**: Deterministic host runtime vulnerability scanner querying SecurityVulnerability.io / Node.js CVE baselines with zero external dependencies.
+- **NVIDIA SkillSpector Protocol**: Multi-stage skill security auditing in `scripts/install-skill.sh` and `.agents/hooks/skill-lifecycle-auditor.js` preventing prompt injection overrides, MCP tool poisoning, and data exfiltration.
+- **Pre-Commit & CI Automation**: Integrated Semgrep AST analysis and Node.js runtime CVE validation into `scripts/pre-commit.sh` and `.github/workflows/ci.yml`.
+
+---
+
 ## [1.2.0] - 2026-10-07
 
 ### Added

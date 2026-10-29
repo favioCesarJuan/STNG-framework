@@ -32,5 +32,11 @@ jobs:
       - name: 🛡️ Verify Worf Tactical Security Shield
         run: node .agents/hooks/worf-security-shield.js --test
 
+      - name: 🛡️ Verify Node.js Host Runtime CVE Posture (Worf)
+        run: node scripts/worf-node-audit.js --test
+
+      - name: 🛡️ Verify Skill Lifecycle & SkillSpector Protocol
+        run: node .agents/hooks/skill-lifecycle-auditor.js --test
+
       - name: 📜 Test Captain's Log Telemetry Ledger
         run: node .agents/hooks/captains-log-writer.js --test

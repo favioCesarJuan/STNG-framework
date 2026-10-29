@@ -1,0 +1,46 @@
+rules:
+  - id: starfleet-prohibit-continuous-polling
+    languages: [javascript, typescript]
+    message: "🚨 [DR. CRUSHER & WORF]: Continuous polling with setInterval is prohibited by the Ponytail Minimalist Protocol. Use WebSockets, SSE, or reactive events."
+    severity: ERROR
+    patterns:
+      - pattern-either:
+          - pattern: setInterval($FN, ...)
+      - pattern-regex: (fetch|axios|http\.get|https\.get|request)\s*\(
+
+  - id: starfleet-enforce-node-prefix
+    languages: [javascript, typescript]
+    message: "⚠️ [GEORDI LA FORGE]: Ponytail hygiene directive: Always use canonical 'node:' prefix for core Node.js modules (e.g., 'node:fs', 'node:path')."
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: import $X from '$MOD'
+          - pattern: const $X = require('$MOD')
+      - pattern-regex: "['\"](fs|path|child_process|crypto|os|util|events|stream|buffer|http|https|net|tls|url|dns|readline)['\"]"
+
+  - id: starfleet-worf-command-injection
+    languages: [javascript, typescript]
+    message: "🚨 [LT. CMDR. WORF]: Command injection hazard. Unsanitized variable concatenation inside child_process.exec detected. Use execFile or sanitized arguments."
+    severity: ERROR
+    patterns:
+      - pattern-either:
+          - pattern: child_process.exec($CMD + $VAR, ...)
+          - pattern: child_process.exec(`${$CMD}...`, ...)
+          - pattern: exec($CMD + $VAR, ...)
+          - pattern: exec(`${$CMD}...`, ...)
+
+  - id: starfleet-prohibit-eval
+    languages: [javascript, typescript]
+    message: "🚨 [DATA & WORF]: Dynamic code execution via eval or new Function is prohibited by Starfleet Security Omega directives."
+    severity: ERROR
+    patterns:
+      - pattern-either:
+          - pattern: eval(...)
+          - pattern: new Function(...)
+
+  - id: starfleet-secret-detection
+    languages: [javascript, typescript]
+    message: "🚨 [WORF]: Hardcoded API key or credential pattern detected. Store credentials in encrypted vaults or .env."
+    severity: ERROR
+    patterns:
+      - pattern-regex: (?i)(ai_key|api_key|secret_key|private_key|auth_token)\s*[:=]\s*['"][a-zA-Z0-9_\-]{20,}['"]
