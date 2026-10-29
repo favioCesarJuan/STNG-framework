@@ -72,6 +72,12 @@ if [ ! -f "config/models.config.json" ]; then
   cp "$TEMP_DIR/config/models.config.json" config/models.config.json
 fi
 
+if [ ! -f ".mcp/mcp-servers.config.json" ] && [ -f "$TEMP_DIR/.mcp/mcp-servers.config.json" ]; then
+  echo -e "🔌 Setting up default MCP sensor triad..."
+  mkdir -p .mcp
+  cp "$TEMP_DIR/.mcp/mcp-servers.config.json" .mcp/mcp-servers.config.json
+fi
+
 if [ ! -f "Agents.md" ]; then
   echo -e "📋 Setting up default Agents.md..."
   cp "$TEMP_DIR/templates/Agents.md" ./Agents.md
@@ -118,6 +124,15 @@ rm -rf "$TEMP_DIR"
 echo -e "🧪 Running initial diagnostic health check..."
 node .agents/hooks/worf-security-shield.js --test >/dev/null
 node .agents/hooks/crusher-health-check.js --test >/dev/null
+if [ -f "scripts/worf-node-audit.js" ]; then
+  node scripts/worf-node-audit.js --test >/dev/null 2>&1 || true
+fi
+
+# Arm git pre-commit shield if in git repo
+if [ -d ".git" ]; then
+  echo -e "🛡️  Binding Git pre-commit shield..."
+  git config core.hooksPath .agents/git-hooks 2>/dev/null || true
+fi
 
 echo -e "${GREEN}${BOLD}✅ [CAPTAIN PICARD]: STNG-Framework successfully installed and operational.${NC}"
 echo -e "👉 Run 'node --test test/**/*.test.js' or 'pnpm test' to verify test suite."

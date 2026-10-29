@@ -37,6 +37,8 @@ function printHeader() {
 function printUsage() {
   console.log(`\n${BOLD}Usage:${NC}`);
   console.log(`  stng init [options]       Initialize full governance and universal AI bridges`);
+  console.log(`  stng advise               Lifecycle-aware interactive advisor (Greenfield/Build/Maintenance)`);
+  console.log(`  stng update [--check]     Consulted, security-gated update from upstream repository`);
   console.log(`  stng test                 Run native automated test suite`);
   console.log(`  stng health               Run Dr. Crusher health diagnostics`);
   console.log(`  stng shield               Run Worf security shield check`);
@@ -135,6 +137,18 @@ export function runInit(options = {}) {
   if (!fs.existsSync(providersFile) || force) {
     fs.copyFileSync(path.join(CLI_DIR, 'config/providers.json'), providersFile);
     console.log(`📋 Multi-provider matrix deployed to config/providers.json`);
+  }
+
+  // 5b. Deploy MCP configuration
+  const mcpDir = path.join(TARGET_DIR, '.mcp');
+  const srcMcp = path.join(CLI_DIR, '.mcp/mcp-servers.config.json');
+  if (fs.existsSync(srcMcp)) {
+    if (!fs.existsSync(mcpDir)) fs.mkdirSync(mcpDir, { recursive: true });
+    const targetMcp = path.join(mcpDir, 'mcp-servers.config.json');
+    if (!fs.existsSync(targetMcp) || force) {
+      fs.copyFileSync(srcMcp, targetMcp);
+      console.log(`🔌 Indispensable MCP Triad deployed to .mcp/mcp-servers.config.json`);
+    }
   }
 
   // 6. Deploy Universal AI Bridge Files
@@ -247,6 +261,22 @@ if (isMain) {
     case 'init':
     case 'setup':
       runInit();
+      break;
+    case 'update':
+      import('../scripts/stng-updater.js').then(m => {
+        const checkOnly = args.includes('--check');
+        const autoYes = args.includes('--yes') || args.includes('-y');
+        m.runFrameworkUpdate(TARGET_DIR, { checkOnly, yes: autoYes }).then(res => {
+          if (res && (res.aborted || res.success === false)) process.exit(1);
+        });
+      });
+      break;
+    case 'advise':
+    case 'advisor':
+      import('../scripts/interactive-advisor.js').then(m => {
+        const autoYes = args.includes('--yes') || args.includes('-y');
+        m.runLifecycleAdvisor(TARGET_DIR, { yes: autoYes });
+      });
       break;
     case 'test':
       try {

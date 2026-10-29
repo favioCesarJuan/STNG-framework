@@ -13,7 +13,7 @@
 
 ---
 
-🌐 **Languages:** **English (Default)** | [Español](README.es.md) | 📖 **[MANUAL.md (Universal Operational Guide)](MANUAL.md)**
+🌐 **Languages:** **English (Default)** | [Español](README.es.md) | 📖 **[MANUAL.md (English)](MANUAL.md)** | 📖 **[MANUAL.es.md (Español)](MANUAL.es.md)**
 
 ---
 
@@ -241,9 +241,15 @@ Bootstrap or adopt the complete Starfleet governance and universal AI bridges in
 # Run directly via npx / pnpm dlx (Zero installation required)
 npx stng init
 
-# Or pre-configure your primary AI assistant and style preferences:
-npx stng init --provider=claude
-npx stng init --provider=openai --allow-tailwind
+# Lifecycle-aware tactical advisor (Greenfield / Active Development / Maintenance)
+npx stng advise
+
+# Consulted upstream framework updater with Quadruple Security Gate
+npx stng update --check
+npx stng update
+
+# Run full zero-dependency governance test suite (27/27 tests across 14 suites)
+npx stng test
 ```
 
 ### Option B: One-Line Shell Installer

@@ -188,4 +188,32 @@ if (process.argv.includes('--test')) {
   } else {
     process.exit(1);
   }
+} else if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(new URL(import.meta.url).pathname)) {
+  const target = process.argv[2];
+  if (!target) {
+    console.error('Usage: node skill-lifecycle-auditor.js <path-to-skill> [--min-score=85]');
+    process.exit(1);
+  }
+
+  const scoreArg = process.argv.find(a => a.startsWith('--min-score='));
+  const minScore = scoreArg ? parseInt(scoreArg.split('=')[1], 10) : 85;
+
+  console.log(`🛡️  [WORF]: Auditing target skill at: ${target}`);
+  const result = auditWithSkillSpector(target, { minScore });
+
+  console.log(`🔍 Engine: ${result.engine} | Score: ${result.score}/100 | Min Required: ${minScore}`);
+  if (result.findings && result.findings.length > 0) {
+    console.log(`⚠️  Findings detected (${result.findings.length}):`);
+    for (const f of result.findings) {
+      console.log(`  - [${f.risk || 'WARN'}] ${f.label || f.message || JSON.stringify(f)} in ${f.file || target}`);
+    }
+  }
+
+  if (result.passed) {
+    console.log(`✅ [WORF]: Skill passed security evaluation. STATUS: GREEN`);
+    process.exit(0);
+  } else {
+    console.error(`🚨 [WORF]: Skill security evaluation FAILED. Score ${result.score} < ${minScore} or critical findings present. STATUS: RED`);
+    process.exit(1);
+  }
 }

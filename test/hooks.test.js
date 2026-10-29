@@ -328,3 +328,80 @@ describe('📋 Multi-Provider Matrix & Captains Log Telemetry', () => {
     assert.ok(stats.total >= 0);
   });
 });
+
+describe('🏛️ Core Public API Exports (index.js)', async () => {
+  it('should export all public APIs from root index.js', async () => {
+    const api = await import('../index.js');
+    assert.ok(typeof api.evaluateSecurity === 'function');
+    assert.ok(typeof api.diagnoseFileContent === 'function');
+    assert.ok(typeof api.appendLogEntry === 'function');
+    assert.ok(typeof api.auditWithSkillSpector === 'function');
+    assert.ok(typeof api.calculateAffectedNodes === 'function');
+    assert.ok(typeof api.evaluateCircuit === 'function');
+    assert.ok(typeof api.auditNodeRuntime === 'function');
+    assert.ok(typeof api.runFrameworkUpdate === 'function');
+    assert.ok(typeof api.runLifecycleAdvisor === 'function');
+    assert.ok(typeof api.detectProjectLifecycle === 'function');
+    assert.ok(api.PROJECT_LIFECYCLE.GREENFIELD === 'greenfield');
+  });
+});
+
+describe('🧠 Lifecycle Advisor & Project Profiler (interactive-advisor.js)', async () => {
+  const { detectProjectLifecycle, generateRecommendations, PROJECT_LIFECYCLE } = await import('../scripts/interactive-advisor.js');
+
+  it('should detect existing repository lifecycle correctly', () => {
+    const detection = detectProjectLifecycle(process.cwd());
+    assert.ok(detection.commitCount > 0);
+    assert.ok(detection.inferredStage);
+    assert.ok(typeof detection.gaps === 'object');
+  });
+
+  it('should generate targeted recommendations for all 3 lifecycle stages', () => {
+    const greenfieldRecs = generateRecommendations(PROJECT_LIFECYCLE.GREENFIELD, { hasTests: false });
+    assert.ok(greenfieldRecs.some(r => r.category.includes('Arquitectura')));
+
+    const constructionRecs = generateRecommendations(PROJECT_LIFECYCLE.IN_CONSTRUCTION, { hasTests: false, hasMcp: false });
+    assert.ok(constructionRecs.some(r => r.category.includes('Desarrollo Activo')));
+    assert.ok(constructionRecs.some(r => r.title.includes('Test Runner')));
+
+    const maintenanceRecs = generateRecommendations(PROJECT_LIFECYCLE.MAINTENANCE, { hasSemgrep: false });
+    assert.ok(maintenanceRecs.some(r => r.category.includes('Seguridad')));
+  });
+});
+
+describe('🔄 Consulted Framework Updater (stng-updater.js)', async () => {
+  const { getInstalledVersion } = await import('../scripts/stng-updater.js');
+
+  it('should detect current installed version', () => {
+    const ver = getInstalledVersion(process.cwd());
+    assert.ok(typeof ver === 'string');
+    assert.match(ver, /^\d+\.\d+\.\d+/);
+  });
+});
+
+describe('👥 Physical Crew Manifests (.agents/crew/)', () => {
+  it('should have all 8 canonical Starfleet crew officer dossiers', () => {
+    const crewDir = path.resolve('.agents/crew');
+    assert.ok(fs.existsSync(crewDir), '.agents/crew directory must exist');
+
+    const expected = [
+      'riker-orchestrator.md',
+      'data-systems-logic.md',
+      'geordi-architect.md',
+      'worf-security.md',
+      'troi-ux-docs.md',
+      'crusher-health.md',
+      'wesley-runner.md',
+      'q-meta-critic.md'
+    ];
+
+    for (const dossier of expected) {
+      const p = path.join(crewDir, dossier);
+      assert.ok(fs.existsSync(p), `Dossier ${dossier} must exist`);
+      const content = fs.readFileSync(p, 'utf-8');
+      assert.ok(content.includes('name:'), `${dossier} must have name frontmatter`);
+      assert.ok(content.includes('corporateRole:'), `${dossier} must have corporateRole`);
+      assert.ok(content.includes('Directivas'), `${dossier} must have operational directives`);
+    }
+  });
+});

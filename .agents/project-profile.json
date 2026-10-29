@@ -1,0 +1,28 @@
+{
+  "evaluatedAt": "2026-10-29T13:45:42.521Z",
+  "lifecycleStage": "maintenance",
+  "targetDir": "/home/favio/Mis-proyectos/STNG-framework",
+  "metrics": {
+    "commitCount": 12,
+    "gaps": {
+      "hasTests": true,
+      "hasLinter": false,
+      "hasMcp": true,
+      "hasCrew": true,
+      "hasSemgrep": true,
+      "hasGitHooks": true
+    }
+  },
+  "recommendations": [
+    {
+      "category": "Seguridad & Regresiones",
+      "title": "Políticas Estrictas de Semgrep & Worf Shield",
+      "details": "Foco en estabilidad. Bloquea comandos destructivos y analiza dependencias con node-audit y SkillSpector para prevenir CVEs."
+    },
+    {
+      "category": "Mantenibilidad",
+      "title": "Preservación de Capas y Compatibilidad hacia Atrás",
+      "details": "Aplica el Protocolo Cola de Caballo (Ponytail): no introducir dependencias pesadas innecesarias y aislar refactors."
+    }
+  ]
+}

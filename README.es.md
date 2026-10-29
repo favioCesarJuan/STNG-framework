@@ -7,13 +7,13 @@
 [![License: MIT](https://img.shields.io/badge/Licencia-MIT-blue.svg)](LICENSE)
 [![Framework: Antigravity](https://img.shields.io/badge/Runtime-Antigravity%20%7C%20Gemini%20CLI-purple.svg)](https://ai.google.dev)
 [![Architecture: Hexagonal](https://img.shields.io/badge/Arquitectura-Monorepo%20Hexagonal-emerald.svg)](#arquitectura)
-[![Crew: Star Trek TNG](https://img.shields.io/badge/Tripulaci%C3%B3n-Star%20Trek%3A%20TNG-gold.svg)](#-la-tripulaci%C3%B3n-con-mapeo-dual)
+[![Crew: Star Trek TNG](https://img.shields.io/badge/Tripulaci%C3%B3n-Star%20Trek%3A%20TNG-gold.svg)](#-la-tripulación-con-mapeo-dual)
 
 > **Model Hooks deterministas, evaluación en cascada mediante grafos de conocimiento, minimalismo con el Protocolo Ponytail y economía asimétrica de tokens para monorepos complejos (Turborepo, Next.js, Expo, NestJS, Astro).**
 
 ---
 
-🌐 **Idiomas:** [English (Default)](README.md) | **Español** | 📖 **[MANUAL.md (Guía Operativa Universal)](MANUAL.md)**
+🌐 **Idiomas:** [English (Default)](README.md) | **Español** | 📖 **[MANUAL.md (English)](MANUAL.md)** | 📖 **[MANUAL.es.md (Español)](MANUAL.es.md)**
 
 ---
 
@@ -31,6 +31,8 @@ Los agentes autónomos de IA modernos (Gemini, Claude, GPT) sufren de **tres cue
 - **The Captain's Log**: Un libro de bitácora inmutable con marcas de Fecha Estelar (Stardate) que registra cada delegación entre agentes y el veredicto de salud.
 - **Bucle de Evaluación en Cascada**: Consulta la topología del grafo de dependencias para disparar diagnósticos médicos *únicamente* sobre los paquetes afectados.
 - **7 Skills Canónicas**: Depura decenas de micro-skills dispersas en 7 dominios esenciales y blindados.
+- **Asesor de Ciclo de Vida**: Diagnostica brechas y formula preguntas inteligentes tanto para proyectos nuevos (Greenfield), en desarrollo activo o en mantenimiento.
+- **Actualizaciones Consultadas con Cuádruple Seguridad**: `stng update` valida cambios en cuarentena mediante Worf Shield, Semgrep SAST, SkillSpector y CVEs de Node antes de aplicar.
 - **Economía Asimétrica 80/20 de Tokens**: Delega el 80% de las tareas mecánicas rutinarias a **Gemini 3.8 Flash**, reservando **Gemini 3.1 Pro** estrictamente para razonamiento arquitectónico de alto nivel.
 
 ---
@@ -58,120 +60,131 @@ STNG-Framework utiliza una **Arquitectura Cognitiva Dual**. La narrativa de Star
                            (Ejecutor de Tests)
                                     ▲
                                     │ (Auditoría Externa)
-                           [Q (The Q Continuum)]
-                          (Meta-Crítico Omnisciente)
+                           [Q (El Continuo Q)]
+                         (Meta-Crítico Omnisciente)
 ```
 
-| Rol (TNG) | Cargo Corporativo | Modelo Asignado | Mandato Principal |
+| Personaje (TNG) | Cargo Corporativo | Modelo | Mandato Principal |
 | :--- | :--- | :--- | :--- |
-| **Capitán Jean-Luc Picard** | `The Captain / Product Owner` | **Humano (Vos)** | Requisitos supremos, visión de producto y aprobación ejecutiva final. |
-| **Comandante William T. Riker** | `LeadAIOrchestrator` | Gemini 3.1 Pro | Coordina la tripulación, planifica el checklist, despacha subagentes y mantiene `tasks.md`. |
-| **Tte. Cmdr. Data** | `SystemsLogicAnalyst` | Gemini 3.1 Pro | Modelado algorítmico formal, Lenguaje Ubicuo (DDD) y máquinas de estados (FSM). |
-| **Tte. Cmdr. Geordi La Forge** | `ArchitectureLead` | Gemini 3.1 Pro | Monorepo, límites entre NestJS/Next/Expo/Astro y mentoría técnica para el Capitán. |
-| **Tte. Cmdr. Worf** | `SecurityGuardrail` | Gemini 3.1 Pro / Flash | Escudos de ciberseguridad, validación de inputs, Semgrep y simulación Strix Red Team. |
-| **Consejera Deanna Troi** | `DesignSystemEnforcer` | Gemini 3.1 Pro / Flash | Empatía UX/UI, accesibilidad WCAG AAA, CSS Modules, StyleSheet y físicas Apple HIG. |
-| **Dra. Beverly Crusher** | `QualityHealthAuditor` | Gemini 3.1 Pro / Flash | Salud de código, Protocolo Ponytail (YAGNI/anti-bloat) y prohibición de polling. |
-| **Alférez Wesley Crusher** | `TestAutomationRunner` | Gemini 3.8 Flash | Ejecución veloz de scripts, suites de tests unitarios y flujos Maestro E2E en mobile. |
-| **Computadora de la Enterprise** | `RuntimeEnvironment` | Runtime Bash | Salidas deterministas de consola, telemetría del compilador y códigos de salida. |
-| **Q (The Q Continuum)** | `MetaCriticEvaluator` | Gemini 3.1 Pro | Meta-evaluador omnisciente externo, auditoría de líneas temporales y pruebas de caos. |
+| **Capitán Jean-Luc Picard** | `The Captain / Product Owner` | **Humano (Tú)** | Requisitos supremos, roadmap estratégico y aprobación ejecutiva. |
+| **Cmdr. William T. Riker** | `LeadAIOrchestrator` | Gemini 3.1 Pro | Coordina la tripulación, planifica en fases, despacha subagentes y mantiene `tasks.md`. |
+| **Tte. Cmdr. Data** | `SystemsLogicAnalyst` | Gemini 3.1 Pro | Modelado algorítmico formal, lenguaje ubicuo DDD y máquinas de estado finito. |
+| **Tte. Cmdr. Geordi La Forge**| `ArchitectureLead` | Gemini 3.1 Pro | Límites de paquetes, arquitectura de monorepos y mentoría técnica. |
+| **Tte. Cmdr. Worf** | `SecurityGuardrail` | Gemini 3.1 Pro / Flash | Escudo táctico de terminal, Semgrep SAST y auditorías de runtime contra CVEs. |
+| **Consejera Deanna Troi** | `DesignSystemEnforcer` | Gemini 3.1 Pro / Flash | Empatía UX/UI, accesibilidad WCAG AAA, CSS Modules puros y física Apple HIG. |
+| **Dra. Beverly Crusher** | `QualityHealthAuditor` | Gemini 3.1 Pro / Flash | Salud de código, Protocolo Ponytail (anti-bloat) y cero sondeo continuo. |
+| **Alférez Wesley Crusher** | `TestAutomationRunner` | Gemini 3.8 Flash | Ejecución de scripts repetitivos, suites de pruebas unitarias y flujos E2E. |
+| **Computadora** | `RuntimeEnvironment` | Bash Runtime | Salidas deterministas de comandos, telemetría y ciclo de vida de procesos. |
+| **Q (El Continuo Q)** | `MetaCriticEvaluator` | Gemini 3.1 Pro | Evaluación externa omnisciente, juicios de sesgo y pruebas de caos. |
+
+Cada oficial cuenta además con su expediente individual físico en `.agents/crew/*.md`.
 
 ---
 
 ## 🪝 Model Hooks Deterministas
 
-Ubicados en `.agents/hooks/` y declarados en `.agents/hooks.json`:
+Ubicados en `.agents/hooks/` y registrados en `.agents/hooks.json`:
 
 1. **🛡️ Escudo de Seguridad de Worf (`worf-security-shield.js`) - `preToolUse`**:
-   - Intercepta comandos de terminal antes de su ejecución.
-   - Bloquea acciones destructivas (`rm -rf /`, piping a sh, `chmod 777`, escrituras directas a disco).
-2. **🩺 Diagnóstico Médico de Crusher (`crusher-health-check.js`) - `postInvocation`**:
-   - Diagnósticos posteriores a la generación de código.
-   - Aplica el minimalismo Ponytail, bloquea el polling continuo (`setInterval`) y prohíbe Tailwind/NativeWind.
-3. **📜 Registro del Captain's Log (`captains-log-writer.js`) - `postInvocation`**:
-   - Escribe automáticamente la bitácora estructurada en `.agents/captains_log.json` y `.agents/captains_log.md`.
-4. **🔄 Auditor de Ciclo de Vida de Skills (`skill-lifecycle-auditor.js`) - `preSkillInvocation`**:
-   - Audita skills de terceros contra inyecciones de prompt y fugas de credenciales antes de instalarlas.
+   - Intercepta llamadas a consola antes de su ejecución.
+   - Bloquea acciones destructivas (`rm -rf /`, piping curl a bash, `chmod 777`, escrituras directas a disco).
+2. **🩺 Diagnóstico de Salud de la Dra. Crusher (`crusher-health-check.js`) - `postInvocation`**:
+   - Ejecuta análisis tras cada edición.
+   - Aplica el Protocolo Ponytail, verifica la ausencia de sondeo continuo (`setInterval`) y audita imports.
+3. **📜 Escritor de Bitácora del Capitán (`captains-log-writer.js`) - `postInvocation`**:
+   - Escribe automáticamente registros JSON estructurados en `.agents/captains_log.json` y compila `.agents/captains_log.md`.
+4. **🔄 Auditor del Ciclo de Vida de Skills (`skill-lifecycle-auditor.js`) - `preSkillInvocation`**:
+   - Audita habilidades de terceros contra inyecciones de prompt y filtraciones mediante compatibilidad con SkillSpector.
 5. **🌌 Evaluador en Cascada (`cascade-evaluator.js`)**:
-   - Identifica paquetes downstream afectados cuando se modifica código compartido.
+   - Resuelve el DAG de dependencias para aislar el impacto de módulos compartidos modificados.
+6. **⚡ Disyuntor Táctico (`circuit-breaker.js`)**:
+   - Detiene bucles de corrección fallida tras 5 intentos repetidos sobre el mismo archivo.
 
 ---
 
-## 💰 Control y Optimización de Tokens (6 Niveles)
+## 💰 Optimización Económica de Tokens (6 Capas)
 
-1. **Enrutamiento Asimétrico 80/20**: Gemini 3.8 Flash ejecuta el 80% de la mecánica rutinaria; Gemini 3.1 Pro razona a nivel estratégico.
-2. **Carga Perezosa (Lazy Loading)**: Solo se inyecta en el prompt la skill del oficial que está operando en esa fase.
-3. **Cuarentena en Subagentes**: Las iteraciones largas de linters o tests corren en subagentes efímeros (`invoke_subagent`), devolviendo solo un reporte limpio de 5 líneas al chat del Capitán.
-4. **Scoping por Grafo**: Se inyectan únicamente los fragmentos de código afectados en lugar de archivos completos.
-5. **Circuit Breakers**: Corta bucles de autocorrección que fallen 3 veces consecutivas, escalando limpiamente al Capitán.
-6. **Protocolo de Lenguaje Cognitivo (Ahorro del 30% al 50% de Tokens)**: Comprende y responde en el idioma nativo del Capitán (ej. español), pero ejecuta todo el Chain of Thought, análisis AST y prompts de subagentes en **inglés** para aprovechar al máximo la eficiencia del tokenizador BPE.
+1. **Enrutamiento Asimétrico 80/20**: Gemini 3.8 Flash ejecuta el 80% de la carga mecánica (tests, linters); Gemini 3.1 Pro se enfoca en razonamiento.
+2. **Carga Perezosa (Lazy Loading)**: Las skills se inyectan estrictamente bajo demanda por oficial.
+3. **Cuarentena de Contexto**: Bucles intensivos de test/lint corren en subagentes efímeros (`invoke_subagent`), devolviendo resúmenes concisos al hilo principal.
+4. **Acotamiento por Grafo de Conocimiento**: Inyecta únicamente los fragmentos afectados en vez de archivos completos.
+5. **Disyuntores de Edición**: Intercepta fallos repetitivos antes de saturar la ventana de contexto.
+6. **Protocolo de Lenguaje Cognitivo (30% a 50% de Ahorro)**: Entiende y responde en el idioma nativo del Capitán (ej. Español), mientras realiza el razonamiento interno y el análisis AST en **Inglés** para maximizar la compresión BPE.
 
 ---
 
-## 📥 Instalación y Configuración
+## 🚀 Instalación y Uso Rápido
 
-Elegí el método de instalación que mejor se adapte a tu flujo de trabajo:
+### Opción A: CLI Unificada `stng` (Recomendada)
 
-### Opción A: Instalador de una sola línea (Recomendado para proyectos o monorepos existentes)
-Para integrar STNG-Framework en un proyecto o monorepo existente, ejecutá este comando en la raíz de tu repositorio:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/favioCesarJuan/STNG-framework/main/install.sh | bash
+# 1. Instalar la CLI globalmente mediante enlace local o npm
+cd /ruta/hacia/STNG-framework && pnpm link --global
+
+# 2. Inicializar gobernanza en cualquier proyecto
+cd /ruta/hacia/tu-proyecto
+stng init
+
+# 3. Consultar al Asesor de Ciclo de Vida (Greenfield, Desarrollo Activo, Mantenimiento)
+stng advise
+
+# 4. Verificar y aplicar actualizaciones con cuádruple compuerta de seguridad
+stng update --check
+stng update
+
+# 5. Ejecutar la suite completa de pruebas de gobernanza (Zero Dependencies)
+stng test
 ```
-*Este comando instala automáticamente `.agents/hooks/`, `.agents/rules/`, las 7 skills canónicas en `.agents/skills/` y los scripts operativos.*
 
-### Opción C: Clonar como Plantilla de Inicio (Proyecto Nuevo)
-Para iniciar un nuevo proyecto con el framework preconfigurado:
+### Opción B: Script Tradicional
+
 ```bash
-# Clonar el repositorio
-git clone https://github.com/favioCesarJuan/STNG-framework.git mi-proyecto-enterprise
-cd mi-proyecto-enterprise
-
-# Inicializar scripts y permisos
-bash scripts/setup-environment.sh
-```
-
-### Opción D: Integración Manual
-Si preferís control manual explícito:
-```bash
-git clone --depth 1 https://github.com/favioCesarJuan/STNG-framework.git /tmp/stng
-cp -r /tmp/stng/.agents ./
-cp -r /tmp/stng/scripts ./
-cp /tmp/stng/templates/Agents.es.md ./Agents.md
-cp /tmp/stng/templates/rules.es.md ./rules.md
-rm -rf /tmp/stng
-chmod +x scripts/*.sh .agents/hooks/*.js
+cd /ruta/hacia/tu-proyecto
+/ruta/hacia/STNG-framework/install.sh
 ```
 
 ---
 
-## 🚀 Inicio Rápido y Verificación
+## 🌉 Puentes Universales de IA (Más Allá de Gemini)
 
-### 1. Comprobar los Hooks
-```bash
-# Probar el escudo táctico de Worf
-pnpm run shield:test
+STNG-Framework genera puentes de instrucción automáticos para todos los asistentes y motores de IA:
 
-# Probar el diagnóstico médico de Crusher
-pnpm run health:check --test
-
-# Ver la bitácora del Captain's Log
-pnpm run log:view
-```
-
-### 2. Validación de Pre-Commit
-```bash
-pnpm run pre-commit
-```
+| Archivo | Asistente de IA | Propósito |
+| :--- | :--- | :--- |
+| **[`MANUAL.md`](MANUAL.md)** | **Humano / Cualquier LLM** | Manual operativo universal en Inglés. |
+| **[`MANUAL.es.md`](MANUAL.es.md)** | **Humano / Cualquier LLM** | Manual operativo universal en Español. |
+| **[`CLAUDE.md`](CLAUDE.md)** | **Anthropic Claude Code / Desktop** | Directivas de proyecto, comandos TDD y rol de Primer Oficial. |
+| **[`.cursorrules`](.cursorrules)** | **Cursor IDE & Composer** | Salud de código persistente, Ponytail y cero polling. |
+| **[`.windsurfrules`](.windsurfrules)** | **Windsurf (Cascade)** | Límites de ingeniería y guardarraíles deterministas. |
+| **[`.copilot-instructions.md`](.copilot-instructions.md)** | **GitHub Copilot** | Lineamientos en línea para generación y pruebas. |
+| **[`rules.md`](rules.md)** | **Ollama / Roo Code / Cline** | Directivas estándar en Markdown puro sin dependencias. |
+| **[`Agents.md`](Agents.md)** | **Gemini CLI / Antigravity** | Jerarquía de Starfleet y hooks deterministas. |
 
 ---
 
-## 🗺️ Hoja de Ruta (Fase 2)
+## 🤖 Arquitectura Multimodelo y Matriz de Flota
 
-- [x] **Fase 1 (Actual)**: Motor base adaptado para monorepos empresariales (paridad total con ExtraTime sin degradación).
-- [ ] **Fase 2 (Próxima)**: Asistente CLI Universal (`npx @stng/cli init`) que interroga al desarrollador sobre su stack y genera automáticamente la tripulación y los hooks a medida.
+Configurable en `config/models.config.json`:
+
+| Proveedor | Razonamiento Superior (80% tripulación) | Economía Rápida (Wesley / Tests / CI) | Ventana de Contexto |
+| :--- | :--- | :--- | :--- |
+| **Google Gemini** | Gemini 3.1 Pro | Gemini 3.8 Flash | 1,000,000 tokens |
+| **Anthropic Claude** | Claude 3.5 / 3.7 Sonnet | Claude 3.5 Haiku | 200,000 tokens |
+| **OpenAI** | o1 / o3-mini | GPT-4o-mini | 200,000 tokens |
+| **DeepSeek** | DeepSeek-R1 | DeepSeek-V3 | 64,000 tokens |
+| **Ollama Local / vLLM** | Qwen 2.5 Coder 72B / 32B | Qwen 2.5 Coder 7B | 32,768 tokens (Modo Cuarentena) |
 
 ---
 
-## 📜 Licencia
-Distribuido bajo la **Licencia MIT**. Consulte [LICENSE](LICENSE) para más detalles.
+## 🛡️ Blindaje de Seguridad Táctico (GitHub Security Lab)
 
-Desarrollado con honor por **Favio Cesar Juan** & La Tripulación de la Enterprise.
+STNG-Framework implementa los estándares de **[GitHub Security Lab](https://github.com/GitHubSecurityLab/gh-secure)**:
+- **Reporte Privado de Vulnerabilidades**: Canal confidencial en [Security Advisories](https://github.com/favioCesarJuan/STNG-framework/security/advisories/new).
+- **Push Protection & Secret Scanning**: Bloqueo activo contra filtración de claves o tokens.
+- **Dependabot Automatizado**: Monitoreo continuo de la cadena de suministro y PRs de parcheo.
+- **CodeQL Semantic Static Analysis**: Análisis semántico estático en cada commit y pull request.
+- **Worf Security Shield**: Interceptor determinista en tiempo de ejecución.
+- **Semgrep AST Scan**: Reglas Starfleet personalizadas contra patrones de riesgo.
+- **Política Formal de Seguridad**: Documentada en [`SECURITY.md`](SECURITY.md).
+
+*Enterprise cleared for warp. Make it so!*
