@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "init": "node ./bin/stng.js init",
-    "test": "node --test test/**/*.test.js",
+    "test": "node --test",
     "shield:test": "node .agents/hooks/worf-security-shield.js --test",
     "shield:node": "node scripts/worf-node-audit.js --test",
     "shield:semgrep": "semgrep scan --config .agents/rules/semgrep-starfleet.yml --disable-version-check --metrics=off .",

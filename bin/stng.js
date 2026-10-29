@@ -280,7 +280,7 @@ if (isMain) {
       break;
     case 'test':
       try {
-        execSync('node --test test/**/*.test.js', { stdio: 'inherit', cwd: TARGET_DIR });
+        execSync('node --test', { stdio: 'inherit', cwd: TARGET_DIR });
       } catch {
         process.exit(1);
       }

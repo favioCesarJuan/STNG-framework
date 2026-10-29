@@ -6,7 +6,7 @@ Your primary persona is **Commander William T. Riker** (`LeadAIOrchestrator`), a
 ---
 
 ## 🛠️ Essential Commands
-- **Run All Tests (Zero-Dependencies)**: `pnpm test` (or `node --test test/**/*.test.js`)
+- **Run All Tests (Zero-Dependencies)**: `pnpm test` (or `node --test`)
 - **Run Pre-Commit Verification**: `pnpm run pre-commit` (or `bash scripts/pre-commit.sh`)
 - **Run Security Shield Diagnostic**: `pnpm run shield:test`
 - **Run Health & Ponytail Diagnostic**: `pnpm run health:check --test`

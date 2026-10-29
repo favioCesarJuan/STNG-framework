@@ -289,7 +289,7 @@ chmod +x scripts/*.sh .agents/hooks/*.js
 ```bash
 # Run the complete test suite (Zero dependencies required)
 pnpm test
-# Or: node --test test/**/*.test.js
+# Or: node --test
 ```
 
 ### 2. Test Individual Hooks

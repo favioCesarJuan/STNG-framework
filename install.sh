@@ -135,5 +135,5 @@ if [ -d ".git" ]; then
 fi
 
 echo -e "${GREEN}${BOLD}✅ [CAPTAIN PICARD]: STNG-Framework successfully installed and operational.${NC}"
-echo -e "👉 Run 'node --test test/**/*.test.js' or 'pnpm test' to verify test suite."
+echo -e "👉 Run 'node --test' or 'pnpm test' to verify test suite."
 echo -e "👉 Run 'node .agents/hooks/captains-log-writer.js --test' to verify telemetry."

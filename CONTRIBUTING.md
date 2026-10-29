@@ -43,7 +43,7 @@ STNG-Framework enforces **deterministic AI governance**, strict code hygiene, an
    pnpm test
 
    # Or using Node.js native test runner directly (Zero dependencies)
-   node --test test/**/*.test.js
+   node --test
    ```
 
 ---

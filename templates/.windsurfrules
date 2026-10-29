@@ -7,5 +7,5 @@
   * Zero unnecessary dependencies (Ponytail Minimalist Protocol).
   * Strict prohibition of continuous HTTP polling (no setInterval).
   * Pure CSS Modules or native StyleSheet.create for styling.
-  * Run unit tests with \`pnpm test\` or \`node --test test/**/*.test.js\`.
+  * Run unit tests with \`pnpm test\` or \`node --test\`.
   * All destructive shell commands are subject to Worf Tactical Security Shield verification.
