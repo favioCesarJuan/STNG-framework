@@ -1,42 +1,43 @@
 {
-  "version": "1.0.0",
-  "framework": "STNG-Framework",
-  "description": "Antigravity & Gemini CLI Deterministic Model Hooks configuration",
+  "version": "2.0.0",
+  "engine": "stng-governance-core",
+  "theme": "standard",
+  "description": "Deterministic Model Hooks Configuration",
   "hooks": [
     {
       "event": "preToolUse",
-      "name": "worf-security-shield",
-      "path": "./.agents/hooks/worf-security-shield.js",
+      "name": "pre-tool-shell-guard",
+      "path": "./.agents/hooks/pre-tool-shell-guard.js",
       "timeout": 3000,
-      "description": "Intercepts tool calls to prevent dangerous shell executions, unauthorized writes, and security perimeter breaches."
+      "description": "Blocks destructive shell commands and writes to protected system paths."
     },
     {
       "event": "preToolUse",
-      "name": "circuit-breaker",
-      "path": "./.agents/hooks/circuit-breaker.js",
+      "name": "edit-circuit-breaker",
+      "path": "./.agents/hooks/edit-circuit-breaker.js",
       "timeout": 2000,
-      "description": "Monitors edit churn per file to abort runaway token loops and infinite hallucination cascades."
+      "description": "Halts execution when a single file is modified more than 5 times within 10 minutes."
     },
     {
       "event": "postInvocation",
-      "name": "crusher-health-check",
-      "path": "./.agents/hooks/crusher-health-check.js",
-      "timeout": 10000,
-      "description": "Audits touched files for TypeScript compiler health, lint issues, and Ponytail minimalist compliance."
+      "name": "post-edit-policy-check",
+      "path": "./.agents/hooks/post-edit-policy-check.js",
+      "timeout": 8000,
+      "description": "Scans modified files for prohibited continuous polling, styling policy drift, and debug logs."
     },
     {
       "event": "postInvocation",
-      "name": "captains-log-writer",
-      "path": "./.agents/hooks/captains-log-writer.js",
+      "name": "audit-log-writer",
+      "path": "./.agents/hooks/audit-log-writer.js",
       "timeout": 2000,
-      "description": "Maintains an immutable structured ledger of agent delegations, tool invocations, and health scores."
+      "description": "Appends structured JSON and Markdown audit entries to .agents/audit_log.json."
     },
     {
       "event": "preSkillInvocation",
-      "name": "skill-lifecycle-auditor",
-      "path": "./.agents/hooks/skill-lifecycle-auditor.js",
+      "name": "skill-security-scanner",
+      "path": "./.agents/hooks/skill-security-scanner.js",
       "timeout": 5000,
-      "description": "Checks for upstream skill updates, audits code safety, verifies backward compatibility, and blocks unauthorized modifications."
+      "description": "Scans agent skills for prompt injection, credential harvesting, and C2 exfiltration patterns."
     }
   ]
 }

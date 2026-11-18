@@ -1,113 +1,113 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema#",
-  "version": "1.1.0",
-  "framework": "STNG-Framework",
+  "version": "2.0.0",
+  "framework": "stng-governance-core",
+  "theme": "standard",
   "description": "Multi-Provider Asymmetric Model Allocation Policy with Context Budgeting",
   "activeProvider": "auto",
   "providers": {
     "google": {
       "name": "Google Gemini",
-      "highReasoningModel": "Gemini 3.1 Pro",
-      "fastEconomyModel": "Gemini 3.8 Flash",
+      "highReasoningModel": "gemini-2.5-pro",
+      "fastEconomyModel": "gemini-2.5-flash",
       "contextWindow": 1000000
     },
     "anthropic": {
       "name": "Anthropic Claude",
-      "highReasoningModel": "Claude 3.5 Sonnet",
-      "fastEconomyModel": "Claude 3.5 Haiku",
+      "highReasoningModel": "claude-3-7-sonnet",
+      "fastEconomyModel": "claude-3-5-haiku",
       "contextWindow": 200000
     },
     "openai": {
       "name": "OpenAI",
-      "highReasoningModel": "o1 / o3-mini",
-      "fastEconomyModel": "GPT-4o-mini",
+      "highReasoningModel": "o3-mini",
+      "fastEconomyModel": "gpt-4o-mini",
       "contextWindow": 200000
     },
     "deepseek": {
       "name": "DeepSeek",
-      "highReasoningModel": "DeepSeek-R1",
-      "fastEconomyModel": "DeepSeek-V3",
+      "highReasoningModel": "deepseek-reasoner",
+      "fastEconomyModel": "deepseek-chat",
       "contextWindow": 64000
     },
     "local_ollama": {
       "name": "Local Ollama / vLLM",
-      "highReasoningModel": "Qwen 2.5 Coder 72B / 32B",
-      "fastEconomyModel": "Qwen 2.5 Coder 7B",
+      "highReasoningModel": "qwen2.5-coder:32b",
+      "fastEconomyModel": "qwen2.5-coder:7b",
       "contextWindow": 32768,
       "quarantineContextInSubagents": true,
       "maxSnippetLines": 50
     }
   },
   "roles": {
-    "Jean-Luc Picard": {
+    "product-owner": {
       "nature": "HUMAN",
-      "model": "The Captain (User)",
-      "authority": "Supreme requirements, strategic direction, and final approval."
+      "starfleetAlias": "Captain Jean-Luc Picard",
+      "model": "Human Executive",
+      "authority": "Strategic direction, requirements, and final approval."
     },
-    "William T. Riker": {
+    "lead-orchestrator": {
       "nature": "AI_AGENT",
+      "starfleetAlias": "Commander William T. Riker",
       "tier": "HIGH_REASONING",
-      "defaultModel": "Gemini 3.1 Pro / Claude 3.5 Sonnet",
+      "defaultModel": "gemini-2.5-pro / claude-3-7-sonnet",
       "purpose": "Lead AI orchestrator, multi-step coordination, subagent dispatch, checklist management."
     },
-    "Lt. Cmdr. Data": {
+    "systems-logic-analyst": {
       "nature": "AI_AGENT",
+      "starfleetAlias": "Lt. Cmdr. Data",
       "tier": "HIGH_REASONING",
-      "defaultModel": "Gemini 3.1 Pro / DeepSeek-R1",
-      "purpose": "Operations, formal algorithms, FSMs, mathematical domain models, knowledge graph analysis."
+      "defaultModel": "gemini-2.5-pro / deepseek-reasoner",
+      "purpose": "Formal algorithms, FSMs, mathematical domain models, RAG pipelines."
     },
-    "Lt. Cmdr. Geordi La Forge": {
+    "architecture-lead": {
       "nature": "AI_AGENT",
+      "starfleetAlias": "Lt. Cmdr. Geordi La Forge",
       "tier": "HIGH_REASONING",
-      "defaultModel": "Gemini 3.1 Pro / Claude 3.5 Sonnet",
-      "purpose": "Architecture lead, monorepo design, database modeling, technical mentorship for the Captain."
+      "defaultModel": "gemini-2.5-pro / claude-3-7-sonnet",
+      "purpose": "Architecture lead, monorepo design, database modeling, CI/CD boundaries."
     },
-    "Lt. Cmdr. Worf": {
+    "security-guardrail": {
       "nature": "AI_AGENT",
+      "starfleetAlias": "Lt. Tasha Yar / Lt. Cmdr. Worf",
       "tier": "HIGH_REASONING",
-      "defaultModel": "Gemini 3.1 Pro / Claude 3.5 Sonnet",
-      "purpose": "Security guardrails, input validation, Semgrep static analysis, Strix Red Teaming, skill vetting."
+      "defaultModel": "gemini-2.5-pro / claude-3-7-sonnet",
+      "purpose": "Security guardrails, input validation, Semgrep static analysis, skill vetting."
     },
-    "Counselor Deanna Troi": {
+    "ux-design-enforcer": {
       "nature": "AI_AGENT",
+      "starfleetAlias": "Counselor Deanna Troi",
       "tier": "HIGH_REASONING",
-      "defaultModel": "Gemini 3.1 Pro / Claude 3.5 Sonnet",
-      "purpose": "Design system, CSS Modules, StyleSheet, Apple HIG, micro-interactions, WCAG AAA accessibility."
+      "defaultModel": "gemini-2.5-pro / claude-3-7-sonnet",
+      "purpose": "Design system, CSS Modules, StyleSheet, micro-interactions, WCAG AAA accessibility."
     },
-    "Dr. Beverly Crusher": {
+    "quality-health-auditor": {
       "nature": "AI_AGENT",
+      "starfleetAlias": "Dr. Beverly Crusher",
       "tier": "HIGH_REASONING",
-      "defaultModel": "Gemini 3.1 Pro / Claude 3.5 Sonnet",
-      "purpose": "Medical code health, Ponytail minimalism, anti-bloat auditing, type-safety diagnostics."
+      "defaultModel": "gemini-2.5-pro / claude-3-7-sonnet",
+      "purpose": "Code health, YAGNI minimalism, anti-bloat auditing, type-safety diagnostics."
     },
-    "Ensign Wesley Crusher": {
+    "test-automation-runner": {
       "nature": "AI_AGENT",
+      "starfleetAlias": "Ensign Wesley Crusher",
       "tier": "FAST_ECONOMY",
-      "defaultModel": "Gemini 3.8 Flash / Claude 3.5 Haiku / Qwen 7B",
-      "purpose": "Fast test execution, repetitive scripts, compiler passes, Maestro E2E, Vitest/pnpm runners."
+      "defaultModel": "gemini-2.5-flash / claude-3-5-haiku / qwen2.5-coder:7b",
+      "purpose": "Fast test execution, repetitive scripts, compiler passes, E2E runners."
     },
-    "Computer": {
-      "nature": "RUNTIME",
-      "model": "Deterministic Shell (Bash)",
-      "purpose": "Raw compiler logs, execution metrics, exit codes, process management."
-    },
-    "Q (The Q Continuum)": {
+    "meta-critic-evaluator": {
       "nature": "META_AGENT",
+      "starfleetAlias": "Q (The Q Continuum)",
       "tier": "HIGH_REASONING",
-      "defaultModel": "Gemini 3.1 Pro / o1 / Claude 3.5 Sonnet",
-      "purpose": "Omniscient external evaluation, timeline audits, bias challenge, chaos engineering trials."
+      "defaultModel": "gemini-2.5-pro / o3-mini / claude-3-7-sonnet",
+      "purpose": "Independent external evaluation, architecture audits, bias challenge, edge-case trials."
     }
   },
   "tokenOptimizationPolicy": {
     "preferFastEconomyForMechanics": true,
     "quarantineContextInSubagents": true,
     "lazyLoadSkills": true,
-    "circuitBreakerMaxRetries": 3,
-    "cognitiveLanguageProtocol": {
-      "enabled": true,
-      "reasoningCore": "en",
-      "ioLanguage": "auto_detect_mirror",
-      "tokenSavingsEstimate": "30-50%"
-    }
+    "circuitBreakerMaxRetries": 5,
+    "zeroTheatricalFiller": true
   }
 }

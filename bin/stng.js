@@ -1,11 +1,14 @@
 #!/usr/bin/env node
 /**
  * ==============================================================================
- * 🛸 STNG-CLI: UNIVERSAL STARFLEET SETUP & GOVERNANCE INITIALIZER
+ * STNG-CLI: DETERMINISTIC GOVERNANCE RUNTIME & HOOKS RUNNER
  * ==============================================================================
- * Single executable command to bootstrap, adapt, and configure any repository:
- *   npx stng init [--provider=claude|gemini|openai|deepseek|ollama] [--allow-tailwind]
- * Zero dependencies outside Node.js core standard library.
+ *   stng init [--provider=...] [--theme=standard|starfleet] [--allow-tailwind]
+ *   stng guard | shield
+ *   stng policy | health
+ *   stng circuit:reset
+ *   stng audit-stats | log [--stats]
+ *   stng demo
  * ==============================================================================
  */
 
@@ -25,27 +28,51 @@ const NC = '\x1b[0m';
 const CLI_DIR = path.resolve(new URL('.', import.meta.url).pathname, '..');
 const TARGET_DIR = process.cwd();
 
-// Parse CLI flags
 const args = process.argv.slice(2);
 const command = args[0] || 'init';
 
+function resolveTheme(cliArgs = args) {
+  const themeArg = cliArgs.find(a => a.startsWith('--theme='));
+  if (themeArg) return themeArg.split('=')[1].toLowerCase() === 'starfleet' ? 'starfleet' : 'standard';
+  if (process.env.AGENT_THEME === 'starfleet') return 'starfleet';
+  return 'standard';
+}
+
+export function printCrewThemeNotice(activeTheme = 'standard') {
+  console.log(`\n${CYAN}${BOLD}ℹ️  [AGENT IDENTITY MODE: ${activeTheme.toUpperCase()}]${NC}`);
+  if (activeTheme === 'starfleet') {
+    console.log(`   Starfleet TNG Crew aliases active (concise role tags, 0 extra output tokens).`);
+    console.log(`   Switch back to pure corporate titles anytime with ${BOLD}--theme=standard${NC}.`);
+  } else {
+    console.log(`   Deployed in '${BOLD}standard${NC}' mode (Corporate Technical Roles) for maximum enterprise clarity.`);
+    console.log(`   💡 Prefer the Star Trek: TNG Crew aliases (0 extra output tokens)?`);
+    console.log(`      Run with ${BOLD}--theme=starfleet${NC} (or set ${BOLD}AGENT_THEME=starfleet${NC}) to map each role:`);
+    console.log(`      • Picard (Product Owner)      • Riker (Lead Orchestrator)    • Data (Systems & Logic)`);
+    console.log(`      • Geordi (Architecture Lead)  • Tasha Yar (Shell Guardrail)  • Worf (SAST & Red Team)`);
+    console.log(`      • Crusher (Code Health)       • Troi (UX & Accessibility)    • Wesley (Test Runner)`);
+    console.log(`      • Q (Adversarial Meta-Critic)`);
+  }
+}
+
 function printHeader() {
-  console.log(`\n${CYAN}${BOLD}🛸 STNG-FRAMEWORK: UNIFIED STARFLEET GOVERNANCE INITIALIZER${NC}`);
+  console.log(`\n${CYAN}${BOLD}STNG-FRAMEWORK: DETERMINISTIC AGENT GOVERNANCE RUNTIME${NC}`);
   console.log(`${BOLD}------------------------------------------------------------${NC}`);
 }
 
 function printUsage() {
   console.log(`\n${BOLD}Usage:${NC}`);
-  console.log(`  stng init [options]       Initialize full governance and universal AI bridges`);
-  console.log(`  stng advise               Lifecycle-aware interactive advisor (Greenfield/Build/Maintenance)`);
-  console.log(`  stng update [--check]     Consulted, security-gated update from upstream repository`);
+  console.log(`  stng init [options]       Deploy deterministic hooks, rules, and bridges`);
+  console.log(`  stng guard                Run pre-tool shell & path guard self-test (alias: shield)`);
+  console.log(`  stng policy               Run post-edit policy check self-test (alias: health)`);
+  console.log(`  stng circuit:reset        Reset edit circuit breaker counters`);
+  console.log(`  stng audit-stats          Display audit log telemetry (alias: log --stats)`);
+  console.log(`  stng advise               Lifecycle-aware interactive advisor`);
+  console.log(`  stng update [--check]     Consulted, security-gated update from upstream`);
+  console.log(`  stng demo                 Run <60s live guardrail demonstration`);
   console.log(`  stng test                 Run native automated test suite`);
-  console.log(`  stng health               Run Dr. Crusher health diagnostics`);
-  console.log(`  stng shield               Run Worf security shield check`);
-  console.log(`  stng log [--stats]        Display Captain's Log ledger or telemetry stats`);
-  console.log(`  stng circuit:reset        Reset Worf's circuit breaker counters`);
   console.log(`\n${BOLD}Options for init:${NC}`);
   console.log(`  --provider=<name>         Pre-set primary AI (gemini, claude, openai, deepseek, ollama)`);
+  console.log(`  --theme=<standard|starfleet>  Agent identity theme (default: standard)`);
   console.log(`  --allow-tailwind          Permit TailwindCSS in style governance`);
   console.log(`  --force                   Overwrite existing template configurations\n`);
 }
@@ -81,65 +108,59 @@ export function runInit(options = {}) {
 
   const allowTailwind = options.allowTailwind || args.includes('--allow-tailwind');
   const force = options.force || args.includes('--force');
+  const theme = options.theme || resolveTheme(args);
   const providerArg = args.find(a => a.startsWith('--provider='));
   const preferredProvider = providerArg ? providerArg.split('=')[1].toLowerCase() : 'auto';
 
-  console.log(`📂 Target sector: ${BOLD}${TARGET_DIR}${NC}`);
+  console.log(`Target directory: ${BOLD}${TARGET_DIR}${NC}`);
   const env = detectProjectEnvironment();
 
-  // 1. Package manager advisory
   if (env.hasPnpm) {
-    console.log(`${GREEN}⚡ pnpm detected:${NC} Recommended Starfleet package manager.`);
+    console.log(`${GREEN}pnpm detected:${NC} Recommended package manager.`);
   } else {
-    console.log(`${YELLOW}💡 Recommendation:${NC} Consider adopting ${BOLD}pnpm${NC} for up to 70% disk space savings via hardlink deduplication.`);
+    console.log(`${YELLOW}Recommendation:${NC} Consider adopting ${BOLD}pnpm${NC} for strict symlink isolation and disk savings.`);
   }
 
-  // 2. Backup existing .agents if present and not force
   const agentsDir = path.join(TARGET_DIR, '.agents');
   const srcAgents = path.join(CLI_DIR, '.agents');
   if (path.resolve(srcAgents) !== path.resolve(agentsDir) && fs.existsSync(agentsDir) && !force) {
     const backupName = `.agents.backup.${Date.now()}`;
-    console.log(`${YELLOW}🛡️  [WORF]: Existing .agents found. Backing up to ${backupName}...${NC}`);
+    console.log(`${YELLOW}Existing .agents found. Backing up to ${backupName}...${NC}`);
     fs.cpSync(agentsDir, path.join(TARGET_DIR, backupName), { recursive: true });
   }
 
-  // 3. Deploy .agents (Hooks, Rules, Skills)
   if (path.resolve(srcAgents) !== path.resolve(agentsDir)) {
-    console.log(`📦 Deploying deterministic hooks, rules, and canonical skills...`);
+    console.log(`Deploying deterministic hooks, rules, and canonical skills...`);
     fs.cpSync(srcAgents, agentsDir, { recursive: true });
   }
 
-  // 4. Deploy Scripts
   const scriptsDir = path.join(TARGET_DIR, 'scripts');
   const srcScripts = path.join(CLI_DIR, 'scripts');
   if (path.resolve(srcScripts) !== path.resolve(scriptsDir)) {
     fs.cpSync(srcScripts, scriptsDir, { recursive: true });
   }
 
-  // 5. Deploy Configs & Models
   const configDir = path.join(TARGET_DIR, 'config');
   if (!fs.existsSync(configDir)) fs.mkdirSync(configDir, { recursive: true });
   const modelConfigFile = path.join(configDir, 'models.config.json');
   if (!fs.existsSync(modelConfigFile) || force) {
     let modelConfigRaw = fs.readFileSync(path.join(CLI_DIR, 'config/models.config.json'), 'utf-8');
-    if (preferredProvider !== 'auto') {
-      try {
-        const parsed = JSON.parse(modelConfigRaw);
-        parsed.activeProvider = preferredProvider;
-        modelConfigRaw = JSON.stringify(parsed, null, 2);
-      } catch {}
-    }
+    try {
+      const parsed = JSON.parse(modelConfigRaw);
+      if (preferredProvider !== 'auto') parsed.activeProvider = preferredProvider;
+      parsed.theme = theme;
+      modelConfigRaw = JSON.stringify(parsed, null, 2);
+    } catch {}
     fs.writeFileSync(modelConfigFile, modelConfigRaw, 'utf-8');
-    console.log(`⚙️  Models configured for active provider: ${BOLD}${preferredProvider}${NC}`);
+    console.log(`Models configured for active provider: ${BOLD}${preferredProvider}${NC} (theme: ${BOLD}${theme}${NC})`);
   }
 
   const providersFile = path.join(configDir, 'providers.json');
   if (!fs.existsSync(providersFile) || force) {
     fs.copyFileSync(path.join(CLI_DIR, 'config/providers.json'), providersFile);
-    console.log(`📋 Multi-provider matrix deployed to config/providers.json`);
+    console.log(`Multi-provider matrix deployed to config/providers.json`);
   }
 
-  // 5b. Deploy MCP configuration
   const mcpDir = path.join(TARGET_DIR, '.mcp');
   const srcMcp = path.join(CLI_DIR, '.mcp/mcp-servers.config.json');
   if (fs.existsSync(srcMcp)) {
@@ -147,111 +168,108 @@ export function runInit(options = {}) {
     const targetMcp = path.join(mcpDir, 'mcp-servers.config.json');
     if (!fs.existsSync(targetMcp) || force) {
       fs.copyFileSync(srcMcp, targetMcp);
-      console.log(`🔌 Indispensable MCP Triad deployed to .mcp/mcp-servers.config.json`);
+      console.log(`MCP configuration deployed to .mcp/mcp-servers.config.json`);
     }
   }
 
-  // 6. Deploy Universal AI Bridge Files
   const bridges = [
-    { src: 'MANUAL.md', dest: 'MANUAL.md', label: '📖 Universal MANUAL.md' },
-    { src: 'templates/Agents.md', dest: 'Agents.md', label: '🤖 Agents.md (Gemini/Antigravity)' },
-    { src: 'templates/CLAUDE.md', dest: 'CLAUDE.md', label: '🤖 CLAUDE.md (Anthropic Claude Code)' },
-    { src: 'templates/.cursorrules', dest: '.cursorrules', label: '🎯 .cursorrules (Cursor IDE)' },
-    { src: 'templates/.windsurfrules', dest: '.windsurfrules', label: '🏄 .windsurfrules (Windsurf Cascade)' },
-    { src: 'templates/.copilot-instructions.md', dest: '.copilot-instructions.md', label: '🐙 .copilot-instructions.md (GitHub Copilot)' },
-    { src: 'templates/rules.md', dest: 'rules.md', label: '📐 rules.md (Local LLMs/Ollama)' }
+    { src: 'MANUAL.md', dest: 'MANUAL.md', label: 'Universal MANUAL.md' },
+    { src: 'templates/Agents.md', dest: 'Agents.md', label: 'Agents.md (Gemini/Antigravity)' },
+    { src: 'templates/CLAUDE.md', dest: 'CLAUDE.md', label: 'CLAUDE.md (Anthropic Claude Code)' },
+    { src: 'templates/.cursorrules', dest: '.cursorrules', label: '.cursorrules (Cursor IDE)' },
+    { src: 'templates/.windsurfrules', dest: '.windsurfrules', label: '.windsurfrules (Windsurf Cascade)' },
+    { src: 'templates/.copilot-instructions.md', dest: '.copilot-instructions.md', label: '.copilot-instructions.md (GitHub Copilot)' },
+    { src: 'templates/rules.md', dest: 'rules.md', label: 'rules.md (Local LLMs/Ollama)' }
   ];
 
-  console.log(`🌉 Generating universal AI instruction bridges...`);
+  console.log(`Generating AI instruction bridges...`);
   for (const b of bridges) {
+    const srcPath = path.join(CLI_DIR, b.src);
     const destPath = path.join(TARGET_DIR, b.dest);
+    if (!fs.existsSync(srcPath)) continue;
     if (!fs.existsSync(destPath) || force) {
-      fs.copyFileSync(path.join(CLI_DIR, b.src), destPath);
-      console.log(`   ✔ ${b.label}`);
+      fs.copyFileSync(srcPath, destPath);
+      console.log(`   + ${b.label}`);
     } else {
-      console.log(`   ℹ ${b.label} already present (skipped)`);
+      console.log(`   - ${b.label} already present (skipped)`);
     }
   }
 
-  // 7. Configure Tailwind permission if specified or detected
+  const envFile = path.join(agentsDir, '.env');
+  const envLines = [`AGENT_THEME=${theme}`];
   if (allowTailwind || env.hasTailwind) {
-    const envFile = path.join(agentsDir, '.env');
-    fs.appendFileSync(envFile, '\nALLOW_TAILWIND=true\n', 'utf-8');
-    console.log(`🎨 Style Governance: TailwindCSS permitted per configuration.`);
+    envLines.push('ALLOW_TAILWIND=true');
+    console.log(`Style Governance: TailwindCSS permitted per configuration.`);
   }
+  fs.appendFileSync(envFile, `\n${envLines.join('\n')}\n`, 'utf-8');
 
-  // 8. Self-Diagnostic Health Verification
-  console.log(`🧪 Running Starfleet diagnostic verification...`);
+  console.log(`Running hook verification...`);
   try {
-    execSync(`node "${path.join(agentsDir, 'hooks/worf-security-shield.js')}" --test`, { stdio: 'ignore' });
-    execSync(`node "${path.join(agentsDir, 'hooks/crusher-health-check.js')}" --test`, { stdio: 'ignore' });
-    execSync(`node "${path.join(agentsDir, 'hooks/circuit-breaker.js')}" --test`, { stdio: 'ignore' });
-    console.log(`${GREEN}✔ All deterministic hooks verified and active.${NC}`);
-  } catch (err) {
-    console.log(`${YELLOW}⚠ Note: Hooks installed, initial check completed with warnings.${NC}`);
+    execSync(`node "${path.join(agentsDir, 'hooks/pre-tool-shell-guard.js')}" --test`, { stdio: 'ignore' });
+    execSync(`node "${path.join(agentsDir, 'hooks/post-edit-policy-check.js')}" --test`, { stdio: 'ignore' });
+    execSync(`node "${path.join(agentsDir, 'hooks/edit-circuit-breaker.js')}" --test`, { stdio: 'ignore' });
+    console.log(`${GREEN}All deterministic hooks verified and active.${NC}`);
+  } catch {
+    console.log(`${YELLOW}Note: Hooks installed, initial check completed with warnings.${NC}`);
   }
 
-  // 9. Bind Git Pre-Commit Hook
   if (env.hasGit) {
     try {
       execSync('git config core.hooksPath .agents/git-hooks', { stdio: 'ignore', cwd: TARGET_DIR });
-      console.log(`${GREEN}✔ Git Pre-Commit Shield armed:${NC} core.hooksPath set to .agents/git-hooks`);
+      console.log(`${GREEN}Git Pre-Commit Guard armed:${NC} core.hooksPath set to .agents/git-hooks`);
     } catch {}
   }
 
-  console.log(`\n${GREEN}${BOLD}✅ [CAPTAIN PICARD]: STNG-Framework successfully initialized!${NC}`);
-  console.log(`👉 All AI coding assistants (Claude, Cursor, Windsurf, Copilot, Gemini, Ollama) are now unified.`);
-  console.log(`👉 Run ${BOLD}pnpm test${NC} (or ${BOLD}npx stng test${NC}) to verify test suite.\n`);
+  printCrewThemeNotice(theme);
+
+  console.log(`\n${GREEN}${BOLD}[OK]: STNG-Framework governance initialized.${NC}`);
+  console.log(`Run ${BOLD}pnpm test${NC} (or ${BOLD}npx stng test${NC}) to verify test suite.\n`);
 }
 
-/**
- * Renders an ASCII dashboard summarizing Captain's Log telemetry.
- * @param {string} targetDir
- * @returns {object|null}
- */
 export function displayLogStats(targetDir = process.cwd()) {
-  const logJsonPath = path.join(targetDir, '.agents/captains_log.json');
+  const newLogPath = path.join(targetDir, '.agents/audit_log.json');
+  const legacyLogPath = path.join(targetDir, '.agents/captains_log.json');
+  const logJsonPath = fs.existsSync(newLogPath) ? newLogPath : legacyLogPath;
+
   if (!fs.existsSync(logJsonPath)) {
-    console.log(`\n${YELLOW}No Captain's Log ledger found at .agents/captains_log.json${NC}\n`);
-    return null;
+    console.log(`\n${YELLOW}No audit log ledger found at .agents/audit_log.json${NC}\n`);
+    return { total: 0, roleCounts: {}, securityBlocks: 0, policyWarnings: 0 };
   }
 
   let entries = [];
   try {
     entries = JSON.parse(fs.readFileSync(logJsonPath, 'utf-8'));
   } catch {
-    console.log(`\n${RED}Error parsing captains_log.json${NC}\n`);
+    console.log(`\n${RED}Error parsing ${path.basename(logJsonPath)}${NC}\n`);
     return null;
   }
 
-  const officerCounts = {};
-  let healthWarnings = 0;
+  const roleCounts = {};
+  let policyWarnings = 0;
   let securityBlocks = 0;
 
   for (const entry of entries) {
-    const officer = entry.officer || entry.agent || 'Computer';
-    officerCounts[officer] = (officerCounts[officer] || 0) + 1;
-    if (entry.healthScore && entry.healthScore < 100) healthWarnings++;
-    if (entry.event === 'security_blocked' || (entry.action && entry.action.includes('blocked'))) securityBlocks++;
+    const role = entry.from || entry.officer || entry.agent || 'Runtime';
+    roleCounts[role] = (roleCounts[role] || 0) + 1;
+    if (entry.healthStatus && entry.healthStatus !== 'HEALTHY' && !String(entry.healthStatus).startsWith('HEALTHY')) policyWarnings++;
+    if (entry.event === 'security_blocked' || entry.securityStatus === 'BLOCKED') securityBlocks++;
   }
 
-  console.log(`\n${CYAN}${BOLD}📜 CAPTAIN'S LOG TELEMETRY DASHBOARD${NC}`);
+  console.log(`\n${CYAN}${BOLD}GOVERNANCE AUDIT LOG TELEMETRY${NC}`);
   console.log(`${BOLD}------------------------------------------------------------${NC}`);
-  console.log(`Total Stardate Entries Recorded:  ${BOLD}${entries.length}${NC}`);
-  console.log(`Security Perimeter Blocks (Worf): ${securityBlocks > 0 ? RED : GREEN}${securityBlocks}${NC}`);
-  console.log(`Health Diagnostic Warnings:       ${healthWarnings > 0 ? YELLOW : GREEN}${healthWarnings}${NC}`);
-  console.log(`Estimated Token Protocol Savings: ${GREEN}30% - 50% via BPE Deliberation${NC}`);
-  console.log(`\n${BOLD}Officer Activity Breakdown:${NC}`);
-  for (const [officer, count] of Object.entries(officerCounts)) {
+  console.log(`Total Audit Entries Recorded:   ${BOLD}${entries.length}${NC}`);
+  console.log(`Security Guardrail Blocks:      ${securityBlocks > 0 ? RED : GREEN}${securityBlocks}${NC}`);
+  console.log(`Policy Health Warnings:         ${policyWarnings > 0 ? YELLOW : GREEN}${policyWarnings}${NC}`);
+  console.log(`\n${BOLD}Role Activity Breakdown:${NC}`);
+  for (const [role, count] of Object.entries(roleCounts)) {
     const bar = '█'.repeat(Math.min(count * 2, 28));
-    console.log(`  ${officer.padEnd(24)} ${CYAN}${bar}${NC} (${count})`);
+    console.log(`  ${role.padEnd(28)} ${CYAN}${bar}${NC} (${count})`);
   }
   console.log(`${BOLD}------------------------------------------------------------${NC}\n`);
 
-  return { total: entries.length, officerCounts, securityBlocks, healthWarnings };
+  return { total: entries.length, roleCounts, securityBlocks, policyWarnings };
 }
 
-// Only dispatch commands when invoked directly as a CLI binary
 const currentFile = fileURLToPath(import.meta.url);
 const executedFile = process.argv[1] ? path.resolve(process.argv[1]) : '';
 const isMain = executedFile === currentFile || executedFile.endsWith('/stng.js') || executedFile.endsWith('/stng');
@@ -263,7 +281,7 @@ if (isMain) {
       runInit();
       break;
     case 'update':
-      import('../scripts/stng-updater.js').then(m => {
+      import('../scripts/framework-updater.js').then(m => {
         const checkOnly = args.includes('--check');
         const autoYes = args.includes('--yes') || args.includes('-y');
         m.runFrameworkUpdate(TARGET_DIR, { checkOnly, yes: autoYes }).then(res => {
@@ -285,34 +303,44 @@ if (isMain) {
         process.exit(1);
       }
       break;
+    case 'demo':
+      try {
+        execSync('node examples/quickstart-demo.js', { stdio: 'inherit', cwd: TARGET_DIR });
+      } catch {
+        process.exit(1);
+      }
+      break;
+    case 'guard':
     case 'shield':
       try {
-        execSync('node .agents/hooks/worf-security-shield.js --test', { stdio: 'inherit', cwd: TARGET_DIR });
+        execSync('node .agents/hooks/pre-tool-shell-guard.js --test', { stdio: 'inherit', cwd: TARGET_DIR });
       } catch {
         process.exit(1);
       }
       break;
     case 'circuit:reset':
       try {
-        execSync('node .agents/hooks/circuit-breaker.js --reset', { stdio: 'inherit', cwd: TARGET_DIR });
+        execSync('node .agents/hooks/edit-circuit-breaker.js --reset', { stdio: 'inherit', cwd: TARGET_DIR });
       } catch {
         process.exit(1);
       }
       break;
+    case 'policy':
     case 'health':
       try {
-        execSync('node .agents/hooks/crusher-health-check.js --test', { stdio: 'inherit', cwd: TARGET_DIR });
+        execSync('node .agents/hooks/post-edit-policy-check.js --test', { stdio: 'inherit', cwd: TARGET_DIR });
       } catch {
         process.exit(1);
       }
       break;
+    case 'audit-stats':
     case 'log':
     case 'log:stats':
-      if (args.includes('--stats') || args.includes('stats') || command === 'log:stats') {
+      if (args.includes('--stats') || args.includes('stats') || command === 'log:stats' || command === 'audit-stats') {
         displayLogStats(TARGET_DIR);
       } else {
         try {
-          execSync('cat .agents/captains_log.md 2>/dev/null || echo "No log entries yet."', { stdio: 'inherit', cwd: TARGET_DIR });
+          execSync('cat .agents/audit_log.md 2>/dev/null || echo "No audit log entries yet."', { stdio: 'inherit', cwd: TARGET_DIR });
         } catch {
           process.exit(1);
         }
@@ -330,4 +358,3 @@ if (isMain) {
       process.exit(1);
   }
 }
-

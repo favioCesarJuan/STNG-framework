@@ -1,19 +1,42 @@
 /**
  * ==============================================================================
- * 🛸 STNG-FRAMEWORK: CORE PROGRAMMATIC API ENTRYPOINT
+ * STNG-FRAMEWORK: CORE GOVERNANCE RUNTIME API ENTRYPOINT
  * ==============================================================================
- * Exposes core Starfleet governance, deterministic hooks, security shields,
- * and health checkers for programmatic monorepo and agent integration.
+ * Exposes deterministic model hooks, security guards, policy checks, circuit
+ * breakers, skill scanners, and monorepo cascade scoping.
  * ==============================================================================
  */
 
-export { evaluateSecurity } from './.agents/hooks/worf-security-shield.js';
-export { diagnoseFileContent, HEALTH_RULES } from './.agents/hooks/crusher-health-check.js';
-export { appendLogEntry, calculateStardate } from './.agents/hooks/captains-log-writer.js';
-export { auditSkillPath, auditWithSkillSpector, SUSPICIOUS_PATTERNS } from './.agents/hooks/skill-lifecycle-auditor.js';
-export { calculateAffectedNodes, discoverWorkspaceTopology } from './.agents/hooks/cascade-evaluator.js';
-export { evaluateCircuit, resetCircuit } from './.agents/hooks/circuit-breaker.js';
-export { auditNodeRuntime, SECURE_BASELINE } from './scripts/worf-node-audit.js';
-export { runFrameworkUpdate, getInstalledVersion } from './scripts/stng-updater.js';
+export { evaluateSecurity } from './.agents/hooks/pre-tool-shell-guard.js';
+export {
+  checkFilePolicy,
+  POLICY_RULES,
+  diagnoseFileContent,
+  HEALTH_RULES
+} from './.agents/hooks/post-edit-policy-check.js';
+export {
+  appendAuditLog,
+  formatAuditTimestamp,
+  appendLogEntry,
+  calculateStardate
+} from './.agents/hooks/audit-log-writer.js';
+export {
+  scanSkillSecurity,
+  verifySkillIntegrity,
+  auditSkillPath,
+  auditWithSkillSpector,
+  SUSPICIOUS_PATTERNS
+} from './.agents/hooks/skill-security-scanner.js';
+export {
+  calculateAffectedNodes,
+  discoverWorkspaceTopology,
+  TOPOLOGY_RULES
+} from './.agents/hooks/monorepo-cascade-scope.js';
+export {
+  evaluateCircuit,
+  resetCircuit
+} from './.agents/hooks/edit-circuit-breaker.js';
+export { auditNodeRuntime, SECURE_BASELINE } from './scripts/node-runtime-cve-check.js';
+export { runFrameworkUpdate, getInstalledVersion } from './scripts/framework-updater.js';
 export { runLifecycleAdvisor, detectProjectLifecycle, PROJECT_LIFECYCLE } from './scripts/interactive-advisor.js';
-export { displayLogStats, runInit } from './bin/stng.js';
+export { displayLogStats, runInit, printCrewThemeNotice } from './bin/stng.js';

@@ -121,19 +121,20 @@ fi
 # Cleanup temporary clone
 rm -rf "$TEMP_DIR"
 
-echo -e "🧪 Running initial diagnostic health check..."
-node .agents/hooks/worf-security-shield.js --test >/dev/null
-node .agents/hooks/crusher-health-check.js --test >/dev/null
-if [ -f "scripts/worf-node-audit.js" ]; then
-  node scripts/worf-node-audit.js --test >/dev/null 2>&1 || true
+echo -e "Running initial diagnostic health check..."
+node .agents/hooks/pre-tool-shell-guard.js --test >/dev/null
+node .agents/hooks/post-edit-policy-check.js --test >/dev/null
+if [ -f "scripts/node-runtime-cve-check.js" ]; then
+  node scripts/node-runtime-cve-check.js --test >/dev/null 2>&1 || true
 fi
 
 # Arm git pre-commit shield if in git repo
 if [ -d ".git" ]; then
-  echo -e "🛡️  Binding Git pre-commit shield..."
+  echo -e "Binding Git pre-commit guard..."
   git config core.hooksPath .agents/git-hooks 2>/dev/null || true
 fi
 
-echo -e "${GREEN}${BOLD}✅ [CAPTAIN PICARD]: STNG-Framework successfully installed and operational.${NC}"
-echo -e "👉 Run 'node --test' or 'pnpm test' to verify test suite."
-echo -e "👉 Run 'node .agents/hooks/captains-log-writer.js --test' to verify telemetry."
+echo -e "${GREEN}${BOLD}[OK]: STNG-Framework governance installed in 'standard' mode.${NC}"
+echo -e "Tip: Set AGENT_THEME=starfleet (or pass --theme=starfleet to stng init) to use Star Trek TNG crew aliases (0 extra output tokens)."
+echo -e "Run 'node --test' or 'pnpm test' to verify test suite."
+echo -e "Run 'node .agents/hooks/audit-log-writer.js --test' to verify audit ledger."

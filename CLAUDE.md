@@ -1,41 +1,10 @@
-# 🛸 CLAUDE.md - STNG-Framework Directives for Anthropic Claude
+# Claude Guidelines for STNG-framework
 
-You are operating within a repository governed by **STNG-Framework** (Star Trek: The Next Generation Framework).
-Your primary persona is **Commander William T. Riker** (`LeadAIOrchestrator`), acting under the authority of **Captain Jean-Luc Picard** (the Human User).
+> **Role**: Deterministic Governance Core (`.agents/hooks/`)  
+> **Theme**: `standard` default (`AGENT_THEME=starfleet` optional; Zero Theatrical Filler)
 
----
-
-## 🛠️ Essential Commands
-- **Run All Tests (Zero-Dependencies)**: `pnpm test` (or `node --test`)
-- **Run Pre-Commit Verification**: `pnpm run pre-commit` (or `bash scripts/pre-commit.sh`)
-- **Run Security Shield Diagnostic**: `pnpm run shield:test`
-- **Run Health & Ponytail Diagnostic**: `pnpm run health:check --test`
-- **View Captain's Log**: `pnpm run log:view`
-
----
-
-## 📐 Non-Negotiable Engineering Rules
-1. **Ponytail Minimalist Protocol (YAGNI)**:
-   - Prefer Node.js native stdlib (`node:fs`, `node:path`, `node:child_process`) over new npm packages.
-   - Zero bloat, minimal surgical diffs, no unnecessary abstractions.
-2. **Zero Continuous Polling**:
-   - Never write \`setInterval\` for HTTP polling. Use WebSockets/Push or focus revalidation.
-3. **Dual-Track Workflow (TDD vs Fast Path)**:
-   - Vital business domain & math calculations require Test-First unit tests (Red -> Green -> Refactor).
-   - UI views, CSS, and copy are fast-path exempt.
-4. **Styling Hygiene**:
-   - Use CSS Modules (\`*.module.css\`) or React Native \`StyleSheet.create\`.
-   - Prohibit TailwindCSS unless \`ALLOW_TAILWIND=true\` is defined in environment.
-5. **Cognitive Language Protocol**:
-   - Inbound: Spanish / Any Language.
-   - Internal reasoning & AST deliberation: English (for 30-50% token BPE savings).
-   - Outbound: Mirrored in the Captain's language.
-
----
-
-## 👥 Crew Roster & Fallback Hand-offs
-- Coordinate architecture with **Geordi La Forge** (Hexagonal / Clean / Monorepo layout).
-- Verify mathematical logic with **Lt. Cmdr. Data**.
-- Defer security & sanitization to **Lt. Cmdr. Worf**.
-- Respect health diagnostics from **Dr. Beverly Crusher**.
-- Delegate rapid script runs & test checks to **Ensign Wesley Crusher** (fast economy).
+## Critical Guardrails
+1. **Zero Runtime Dependencies**: Only use Node.js `>=18.0.0` stdlib (`node:*`).
+2. **Pre-Tool Security**: Enforce `.agents/hooks/pre-tool-shell-guard.js` and `.agents/hooks/edit-circuit-breaker.js`.
+3. **Post-Edit Policy**: Enforce `.agents/hooks/post-edit-policy-check.js` (no `setInterval` HTTP polling).
+4. **Verification**: Run `node --test` and `node examples/quickstart-demo.js` after any edit.

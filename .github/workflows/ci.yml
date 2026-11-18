@@ -1,43 +1,58 @@
-name: 🛸 STNG-Framework Tactical CI
+name: STNG Governance Core CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, master ]
 
 jobs:
-  verify:
-    name: Starfleet Deterministic Test Matrix
+  test-and-validate:
+    name: Unit Tests, Schema & Demo (Node ${{ matrix.node-version }})
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
       matrix:
-        node-version: [18.x, 20.x, 22.x]
+        node-version: [18, 20, 22]
 
     steps:
-      - name: 🚀 Checkout Flagship Repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: 📦 Setup Node.js ${{ matrix.node-version }}
+      - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: 🛡️ Run Native Automated Hook Test Suite
+      - name: Run Unit Test Suite
         run: node --test
 
-      - name: 🩺 Run Dr. Crusher Health Diagnostic
-        run: node .agents/hooks/crusher-health-check.js --test
+      - name: Run Quickstart Demo (Standard & Starfleet)
+        run: |
+          node examples/quickstart-demo.js
+          node examples/quickstart-demo.js --theme=starfleet
 
-      - name: 🛡️ Verify Worf Tactical Security Shield
-        run: node .agents/hooks/worf-security-shield.js --test
+      - name: Validate hooks.json and mcp-servers.config.json Schemas
+        run: |
+          node -e "
+            const fs = require('node:fs');
+            const assert = require('node:assert/strict');
+            const hooks = JSON.parse(fs.readFileSync('.agents/hooks.json', 'utf8'));
+            assert.equal(hooks.version, '2.0.0');
+            assert.ok(Array.isArray(hooks.hooks) && hooks.hooks.length >= 5);
+            for (const h of hooks.hooks) {
+              assert.ok(fs.existsSync(h.path), 'Missing hook file: ' + h.path);
+            }
+            const mcp = JSON.parse(fs.readFileSync('.mcp/mcp-servers.config.json', 'utf8'));
+            assert.ok(mcp.mcpServers && typeof mcp.mcpServers === 'object', 'mcpServers root key required');
+            console.log('JSON schemas verified.');
+          "
 
-      - name: 🛡️ Verify Node.js Host Runtime CVE Posture (Worf)
-        run: node scripts/worf-node-audit.js --test
+  semgrep-sast:
+    name: Semgrep SAST Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-      - name: 🛡️ Verify Skill Lifecycle & SkillSpector Protocol
-        run: node .agents/hooks/skill-lifecycle-auditor.js --test
-
-      - name: 📜 Test Captain's Log Telemetry Ledger
-        run: node .agents/hooks/captains-log-writer.js --test
+      - name: Run Semgrep with .semgrep.yml
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: .semgrep.yml

@@ -1,11 +1,10 @@
 #!/usr/bin/env node
 /**
  * ==============================================================================
- * 🌌 CASCADE EVALUATION LOOP (Knowledge Graph & Impact Scoping)
+ * MONOREPO CASCADE IMPACT SCOPER (Workspace Dependency DAG)
  * ==============================================================================
- * Maps modified files to their dependent downstream consumers using dynamic
- * workspace dependency topology (or MCP graph queries). Prevents full monorepo
- * rescans by dispatching targeted medical diagnostics exclusively to affected nodes.
+ * Maps modified files to their dependent downstream packages using dynamic
+ * package.json workspace dependency topology (with static heuristic fallback).
  * ==============================================================================
  */
 
@@ -13,7 +12,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 
-// Fallback heuristic rules for when no dynamic workspaces are discovered
+const scopeLabel = () => (process.env.AGENT_THEME === 'starfleet' ? '[DATA / CASCADE SCOPE]' : '[CASCADE SCOPE]');
+
 export const TOPOLOGY_RULES = [
   {
     sourceMatch: /^packages\/shared-types\//,
@@ -93,7 +93,6 @@ export function discoverWorkspaceTopology(rootDir = process.cwd()) {
     } catch {}
   }
 
-  // Build dependentsOf graph: depName -> Set of packageNames that import it
   const dependentsOf = new Map();
   for (const [pkgName, deps] of pkgDeps.entries()) {
     for (const dep of deps) {
@@ -109,21 +108,18 @@ export function discoverWorkspaceTopology(rootDir = process.cwd()) {
 
 /**
  * Calculates downstream affected projects based on changed file paths.
- * Uses dynamic workspace topology if available, with seamless fallback to static rules.
  * @param {string[]} changedFiles
  * @param {string} rootDir
- * @returns {string[]} Set of affected packages/apps
+ * @returns {string[]} List of affected packages/apps
  */
 export function calculateAffectedNodes(changedFiles = [], rootDir = process.cwd()) {
   const affected = new Set();
   const topology = discoverWorkspaceTopology(rootDir);
 
   if (topology && topology.dirToName.size > 0) {
-    // Dynamic DAG resolution
     for (const file of changedFiles) {
       const normalized = file.replace(/^\.\//, '').replace(/\\/g, '/');
 
-      // Find which package owns this file
       let matchedRelDir = null;
       let matchedPkgName = null;
 
@@ -136,10 +132,8 @@ export function calculateAffectedNodes(changedFiles = [], rootDir = process.cwd(
       }
 
       if (matchedRelDir && matchedPkgName) {
-        // The package itself is affected
         affected.add(matchedRelDir);
 
-        // Transitively find all dependents
         const queue = [matchedPkgName];
         const visited = new Set([matchedPkgName]);
 
@@ -159,7 +153,6 @@ export function calculateAffectedNodes(changedFiles = [], rootDir = process.cwd(
     }
   }
 
-  // Fallback to static heuristic rules if dynamic didn't match anything
   if (affected.size === 0) {
     for (const file of changedFiles) {
       const normalized = file.replace(/^\.\//, '').replace(/\\/g, '/');
@@ -176,26 +169,26 @@ export function calculateAffectedNodes(changedFiles = [], rootDir = process.cwd(
   return Array.from(affected);
 }
 
-// Self-test runner
-if (process.argv.includes('--test')) {
-  console.log('🌌  Running Cascade Evaluator self-test...');
+if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(new URL(import.meta.url).pathname)) {
+  if (process.argv.includes('--test')) {
+    console.log(`${scopeLabel()}: Running monorepo cascade scope self-test...`);
 
-  const sampleChanges = [
-    'packages/shared-types/src/workday.ts',
-    'apps/mobile/src/screens/PunchScreen.tsx'
-  ];
+    const sampleChanges = [
+      'packages/shared-types/src/workday.ts',
+      'apps/mobile/src/screens/PunchScreen.tsx'
+    ];
 
-  const affected = calculateAffectedNodes(sampleChanges);
+    const affected = calculateAffectedNodes(sampleChanges);
 
-  console.log('Inputs:', sampleChanges);
-  console.log('Affected nodes calculated:', affected);
+    console.log('Inputs:', sampleChanges);
+    console.log('Affected nodes calculated:', affected);
 
-  if (affected.includes('apps/web') && affected.includes('apps/api') && affected.includes('apps/mobile')) {
-    console.log('✅ CASCADE: Downstream nodes correctly mapped from shared-types modification.');
-    console.log('🌌  [DATA & Q]: Cascade Evaluation self-test PASSED.');
-    process.exit(0);
-  } else {
-    console.error('🚨 FAILED to map cascade impact.');
-    process.exit(1);
+    if (affected.includes('apps/web') && affected.includes('apps/api') && affected.includes('apps/mobile')) {
+      console.log(`${scopeLabel()}: Self-test PASSED.`);
+      process.exit(0);
+    } else {
+      console.error('FAILED to map cascade impact.');
+      process.exit(1);
+    }
   }
 }

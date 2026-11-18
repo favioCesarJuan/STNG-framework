@@ -24,12 +24,18 @@ Thumbs.db
 *.swo
 
 # Runtime outputs & Logs
+.agents/audit_log.json
+.agents/audit_log.md
 .agents/captains_log.json
 .agents/captains_log.md
+.agents/.circuit_state.json
 logs/
 *.log
 
 # Backups & Temp
 .backup/
+.agents.backup.*
+.tmp-*
+.circuit-test-*
 *.tmp
 scratch/

@@ -45,9 +45,8 @@ if [[ "$SKILL_SOURCE" =~ ^https?:// ]] || [[ "$SKILL_SOURCE" =~ ^git@ ]]; then
   AUDIT_TARGET="$TEMP_CLONE"
 fi
 
-# 1. Run deterministic JavaScript lifecycle auditor
-echo -e "${YELLOW}⚡ [WORF]: Running Starfleet deterministic skill lifecycle audit...${NC}"
-node "$FRAMEWORK_ROOT/.agents/hooks/skill-lifecycle-auditor.js" "$AUDIT_TARGET"
+echo -e "${YELLOW}[SKILL SECURITY SCANNER]: Running deterministic skill security audit...${NC}"
+node "$FRAMEWORK_ROOT/.agents/hooks/skill-security-scanner.js" "$AUDIT_TARGET"
 
 # 2. Run deep inspection with NVIDIA SkillSpector if installed
 if command -v skillspector >/dev/null 2>&1; then

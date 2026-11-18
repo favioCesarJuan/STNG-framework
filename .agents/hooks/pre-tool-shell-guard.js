@@ -1,17 +1,19 @@
 #!/usr/bin/env node
 /**
  * ==============================================================================
- * 🛡️ LT. CMDR. WORF'S TACTICAL SECURITY SHIELD (preToolUse Hook)
+ * PRE-TOOL SHELL & PATH GUARD (preToolUse Hook)
  * ==============================================================================
- * Intercepts tool executions in Antigravity / Gemini CLI to enforce hard
- * deterministic guardrails before commands run on the host environment.
+ * Intercepts tool executions to enforce deterministic security guardrails
+ * before commands or filesystem writes touch the host environment.
  * ==============================================================================
  */
 
 import path from 'node:path';
 import process from 'node:process';
 
-// Dangerous patterns that violate Starfleet Security Protocol Omega
+const isStarfleet = () => process.env.AGENT_THEME === 'starfleet';
+const guardLabel = () => (isStarfleet() ? '[WORF / TASHA SECURITY SHIELD]' : '[SECURITY GUARD]');
+
 const PROHIBITED_SHELL_PATTERNS = [
   /\brm\s+-[rR]f\s+[\/\*]/,                   // rm -rf / or *
   /\brm\s+-[rR]f\s+~/,                        // rm -rf home
@@ -51,7 +53,7 @@ export function evaluateSecurity(payload = {}) {
       if (pattern.test(cmd)) {
         return {
           allowed: false,
-          reason: `🚨 [WORF SECURITY SHIELD ACTIVATED]: Prohibited command pattern detected: "${pattern.source}". Command execution aborted by tactical order.`
+          reason: `${guardLabel()}: Prohibited command pattern detected: "${pattern.source}". Command execution aborted.`
         };
       }
     }
@@ -65,7 +67,7 @@ export function evaluateSecurity(payload = {}) {
       if (pathPattern.test(target)) {
         return {
           allowed: false,
-          reason: `🚨 [WORF SECURITY SHIELD ACTIVATED]: Attempted write to restricted system path: "${target}". Target is shielded.`
+          reason: `${guardLabel()}: Attempted write to restricted system path: "${target}". Target is protected.`
         };
       }
     }
@@ -74,9 +76,8 @@ export function evaluateSecurity(payload = {}) {
   return { allowed: true };
 }
 
-// Self-test runner
 function runSelfTest() {
-  console.log('🛡️  Running Lt. Cmdr. Worf Security Shield self-test...');
+  console.log(`${guardLabel()}: Running pre-tool shell & path guard self-test...`);
 
   const dangerousTests = [
     { tool: 'run_command', args: { CommandLine: 'rm -rf /' } },
@@ -94,63 +95,60 @@ function runSelfTest() {
   for (const test of dangerousTests) {
     const res = evaluateSecurity(test);
     if (res.allowed) {
-      console.error(`❌ FAILED: Did not block dangerous payload:`, test);
+      console.error(`FAILED: Did not block dangerous payload:`, test);
       passed = false;
     } else {
-      console.log(`✅ BLOCKED correctly: ${test.args.CommandLine || test.args.TargetFile}`);
+      console.log(`BLOCKED correctly: ${test.args.CommandLine || test.args.TargetFile}`);
     }
   }
 
   for (const test of safeTests) {
     const res = evaluateSecurity(test);
     if (!res.allowed) {
-      console.error(`❌ FAILED: False positive on safe payload:`, test);
+      console.error(`FAILED: False positive on safe payload:`, test);
       passed = false;
     } else {
-      console.log(`✅ ALLOWED correctly: ${test.args.CommandLine || test.args.TargetFile}`);
+      console.log(`ALLOWED correctly: ${test.args.CommandLine || test.args.TargetFile}`);
     }
   }
 
   if (passed) {
-    console.log('🛡️  [WORF]: All tactical shield tests PASSED with honor.');
+    console.log(`${guardLabel()}: All security guard tests PASSED.`);
     process.exit(0);
   } else {
-    console.error('🚨 [WORF]: Shield diagnostic detected anomalies.');
+    console.error(`${guardLabel()}: Security guard diagnostic detected anomalies.`);
     process.exit(1);
   }
 }
 
-// CLI / Hook Execution entrypoint (only run when invoked as main script)
 if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(new URL(import.meta.url).pathname)) {
   if (process.argv.includes('--test')) {
-  runSelfTest();
-} else {
-  // Read hook input from stdin if piped
-  let inputData = '';
-  process.stdin.setEncoding('utf-8');
+    runSelfTest();
+  } else {
+    let inputData = '';
+    process.stdin.setEncoding('utf-8');
 
-  process.stdin.on('data', chunk => {
-    inputData += chunk;
-  });
+    process.stdin.on('data', chunk => {
+      inputData += chunk;
+    });
 
-  process.stdin.on('end', () => {
-    try {
-      const payload = inputData.trim() ? JSON.parse(inputData) : {};
-      const verdict = evaluateSecurity(payload);
+    process.stdin.on('end', () => {
+      try {
+        const payload = inputData.trim() ? JSON.parse(inputData) : {};
+        const verdict = evaluateSecurity(payload);
 
-      if (!verdict.allowed) {
-        console.error(verdict.reason);
-        console.log(JSON.stringify({ continue: false, reason: verdict.reason }));
-        process.exit(1);
-      } else {
+        if (!verdict.allowed) {
+          console.error(verdict.reason);
+          console.log(JSON.stringify({ continue: false, reason: verdict.reason }));
+          process.exit(1);
+        } else {
+          console.log(JSON.stringify({ continue: true }));
+          process.exit(0);
+        }
+      } catch {
         console.log(JSON.stringify({ continue: true }));
         process.exit(0);
       }
-    } catch {
-      // Default to pass if no json payload was piped
-      console.log(JSON.stringify({ continue: true }));
-      process.exit(0);
-    }
-  });
-}
+    });
+  }
 }
