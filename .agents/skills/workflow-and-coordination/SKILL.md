@@ -1,29 +1,35 @@
 ---
 name: workflow-and-coordination
-description: Multi-agent coordination, strict TDD workflows, task tracking, and deterministic test runners orchestrated by Commander William T. Riker (First Officer) and Ensign Wesley Crusher.
+description: Multi-agent Bridge and Lower-Deck coordination, SDD Cold Review gating, strict TDD workflows, task tracking, and isolated Simulation Sandbox test runners orchestrated by LeadAIOrchestrator and TestAutomationRunner.
 ---
 
-# 📋 Workflow, Task Coordination & Test Execution (Riker & Wesley)
+# Workflow, Task Coordination & Test Execution
 
-## 🎯 Roles & Mindset
-- **Lead Orchestrator**: Commander William T. Riker (First Officer / LeadAIOrchestrator). Receives strategic direction from Captain Picard, coordinates the crew, plans execution checkpoints, and maintains `tasks.md`.
-- **Test Runner & Automation**: Ensign Wesley Crusher (TestAutomationRunner). Executes fast script pipelines, Maestro mobile E2E flows, and Vitest test suites.
+## Architecture: Bridge vs. Lower Deck & Simulation Sandbox
+- **Bridge Roles (Long-Context Authority & Design)**:
+  - `Human / Product Owner` (Naval: `Captain`): Strategic direction, requirements, and final sign-off.
+  - `LeadAIOrchestrator` (Naval: `First Officer`): Plans checklists (`tasks.md`), drafts Vital Logic specs, arbitrates findings, and dispatches subagents.
+- **Lower-Deck Squadron (Stateless Zero-Context Ephemeral Subagents)**:
+  - `MetaCriticEvaluator` (Naval: `Lower-Deck Evaluator`): Executes stateless Zero-Context Cold Reviews (`Paraphraser` -> `Critic` -> `Verifier`) before Vital Logic code is written.
+  - `TestAutomationRunner` (Naval: `Lower-Deck Runner`): Executes unit tests, linters, dry-runs, and hook self-tests inside the isolated **Simulation Sandbox** (`Sim Deck`).
 
 ---
 
-## 🚦 1. Dual-Track Development Workflow
-- **Vital Logic (Strict TDD - Test-First)**:
-  - Mandatory Red -> Green -> Refactor cycle for domain calculations, financial figures, punch clock FSM transitions, and offline sync queues.
+## 1. Dual-Track Development Workflow
+- **Vital Logic (SDD + Cold Review + Strict TDD)**:
+  - Required for new features, architectural changes, auth/security flows, DB/schema changes, and multi-package refactors:
+  - Flow: `Draft Spec -> Zero-Context Cold Review (Lower-Deck Evaluator) -> Human Sign-Off (APPROVED) -> Strict TDD in Simulation Sandbox (Red -> Green -> Refactor)`.
   - Zero pull requests merged without automated regression tests proving expected behavior.
 - **Fast Path (UI & Static Styling)**:
-  - Exemption from Test-First for visual CSS layout, copy changes, translation files, and type definitions.
+  - Exempt from Zero-Context Cold Review and Test-First for visual CSS layout, copy changes, translation files, and type definitions (conserves tokens).
   - Validated by static CI pipelines: `check-types`, `lint`, and `build`.
 
 ---
 
-## 🤖 2. Dynamic Subagent Dispatch Protocol
-- Riker dynamically chooses between **In-Line Persona Phases** (for quick sequential fixes) and **Isolated Subagents** (`invoke_subagent`):
-  - Heavy suites / test runs: Delegated to **Wesley** using **Gemini 3.8 Flash**.
-  - Complex algorithmic modeling: Delegated to **Data** using **Gemini 3.1 Pro**.
-  - Deep UX & layout drafting: Delegated to **Troi** using **Gemini 3.1 Pro / Flash**.
-- All delegations and outcomes are recorded in **The Captain's Log**.
+## 2. Dynamic Subagent Dispatch Protocol
+- Dynamically choose between **In-Line Bridge Phases** (for quick sequential fixes) and **Isolated Lower-Deck Subagents** (`invoke_subagent`):
+  - Zero-context spec reviews: MUST run as an isolated, read-only `MetaCriticEvaluator` subagent (Gate 1 Paraphraser on `FAST_ECONOMY`, Gate 2 Critic & Gate 3 Verifier on cross-model `HIGH_REASONING` when available).
+  - Heavy suites / simulation runs: Delegated to `TestAutomationRunner` (`FAST_ECONOMY`) inside the **Simulation Sandbox / Sim Deck**.
+  - Complex algorithmic modeling: Delegated to `SystemsLogicAnalyst` (`HIGH_REASONING`).
+  - Deep UX & layout drafting: Delegated to `DesignSystemEnforcer` (`HIGH_REASONING` / `FAST_ECONOMY`).
+- Record spec lifecycle and delegation milestones via `.agents/hooks/audit-log-writer.js`.

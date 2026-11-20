@@ -1,19 +1,18 @@
-# 🔄 Zero-Degradation Migration Guide: ExtraTime to STNG-Framework
+# Zero-Degradation Migration Guide
 
-This document guides the seamless transition of the multi-agent governance system in `/home/favio/Mis-proyectos/extra-time` to the clean, deterministic architecture of `STNG-framework`.
+This document guides the transition of an existing repository to the clean, deterministic governance architecture of `STNG-framework` (*Structured Tactical Node Governance*).
 
 ---
 
-## 🛡️ Step 1: Create an Immutable Backup
-Before modifying any files in `extra-time`, archive the existing `.agents` directory:
+## Step 1: Create an Immutable Backup
+Before modifying `.agents` in the target repository, archive the existing directory:
 ```bash
-cd /home/favio/Mis-proyectos/extra-time
 cp -r .agents .agents.backup
 ```
 
 ---
 
-## 📦 Step 2: Deploy Deterministic Model Hooks
+## Step 2: Deploy Deterministic Model Hooks
 Copy the tested hooks and configuration:
 ```bash
 cp /home/favio/Mis-proyectos/STNG-framework/.agents/hooks.json .agents/
@@ -22,8 +21,8 @@ cp -r /home/favio/Mis-proyectos/STNG-framework/.agents/hooks .agents/
 
 ---
 
-## 🧹 Step 3: Replace Fragmented Skills with the 7 Canonical Domains
-Replace the 58 scattered subfolders with the consolidated suite:
+## Step 3: Replace Fragmented Skills with Canonical Domains
+Consolidate scattered skills into canonical domains (`adversarial-meta-review`, `code-health-and-minimalism`, `design-system-and-ui`, `fullstack-architecture`, `security-guardrails`, `skill-governance-lifecycle`, `workflow-and-coordination`):
 ```bash
 rm -rf .agents/skills/*
 cp -r /home/favio/Mis-proyectos/STNG-framework/.agents/skills/* .agents/skills/
@@ -31,20 +30,21 @@ cp -r /home/favio/Mis-proyectos/STNG-framework/.agents/skills/* .agents/skills/
 
 ---
 
-## 📐 Step 4: Synchronize Canonical Rules & Agents.md
+## Step 4: Synchronize Canonical Rules & `Agents.md`
 Update the operational protocol:
 ```bash
 cp /home/favio/Mis-proyectos/STNG-framework/templates/Agents.md ./Agents.md
 cp -r /home/favio/Mis-proyectos/STNG-framework/.agents/rules/* .agents/rules/
 ```
-*(Note: Keep your existing `memory.md`, `tasks.md`, and `architecture.md` intact; they hold your domain invariants).*
+*(Note: Preserve existing `memory.md`, `tasks.md`, and `architecture.md` if they hold domain invariants).*
 
 ---
 
-## ✅ Step 5: Verification & Diagnostics
-Run Worf's pre-commit validation and doctor check:
+## Step 5: Verification & Diagnostics (Simulation Sandbox)
+Run the pre-commit validation and policy self-checks:
 ```bash
 bash scripts/pre-commit.sh
-node .agents/hooks/crusher-health-check.js
+node .agents/hooks/pre-tool-shell-guard.js --test
+node .agents/hooks/post-edit-policy-check.js --test
 ```
-The Enterprise is now fully operational with deterministic guardrails and zero context degradation.
+The repository is now protected with deterministic guardrails, Lower-Deck Cold Review rubrics, and zero runtime dependencies.

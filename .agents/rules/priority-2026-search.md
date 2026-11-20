@@ -1,7 +1,7 @@
-# 🔍 Information Retrieval Directive (Priority 2026)
+# Information Retrieval Directive (Priority 2026)
 
 **TARGET:** All AI agents, subagents, and researchers.  
-**AUTHORITY:** Captain Jean-Luc Picard & Commander William T. Riker.  
+**AUTHORITY:** `Human / Product Owner` (`Captain`) & `LeadAIOrchestrator` (`First Officer`).  
 **STATUS:** PERMANENT & MANDATORY.
 
 ---
@@ -15,4 +15,4 @@ When querying documentation, web search, GitHub issues, package releases, or API
 ---
 
 ## 2. Objective
-This directive eliminates the hallucination and usage of deprecated patterns (such as outdated Expo Router APIs, obsolete NestJS modules, deprecated Next.js app router conventions, or dead npm libraries).
+This directive eliminates the hallucination and usage of deprecated patterns (such as outdated router APIs, obsolete backend modules, or unmaintained packages).

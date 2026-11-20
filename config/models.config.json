@@ -42,65 +42,77 @@
   "roles": {
     "product-owner": {
       "nature": "HUMAN",
-      "starfleetAlias": "Captain Jean-Luc Picard",
+      "navalAlias": "Captain",
+      "deck": "BRIDGE",
       "model": "Human Executive",
       "authority": "Strategic direction, requirements, and final approval."
     },
     "lead-orchestrator": {
       "nature": "AI_AGENT",
-      "starfleetAlias": "Commander William T. Riker",
+      "navalAlias": "First Officer",
+      "deck": "BRIDGE",
       "tier": "HIGH_REASONING",
       "defaultModel": "gemini-2.5-pro / claude-3-7-sonnet",
       "purpose": "Lead AI orchestrator, multi-step coordination, subagent dispatch, checklist management."
     },
     "systems-logic-analyst": {
       "nature": "AI_AGENT",
-      "starfleetAlias": "Lt. Cmdr. Data",
+      "navalAlias": "Science & Logic Officer",
+      "deck": "BRIDGE",
       "tier": "HIGH_REASONING",
       "defaultModel": "gemini-2.5-pro / deepseek-reasoner",
       "purpose": "Formal algorithms, FSMs, mathematical domain models, RAG pipelines."
     },
     "architecture-lead": {
       "nature": "AI_AGENT",
-      "starfleetAlias": "Lt. Cmdr. Geordi La Forge",
+      "navalAlias": "Chief Engineer",
+      "deck": "BRIDGE",
       "tier": "HIGH_REASONING",
       "defaultModel": "gemini-2.5-pro / claude-3-7-sonnet",
       "purpose": "Architecture lead, monorepo design, database modeling, CI/CD boundaries."
     },
     "security-guardrail": {
       "nature": "AI_AGENT",
-      "starfleetAlias": "Lt. Tasha Yar / Lt. Cmdr. Worf",
+      "navalAlias": "Security Officer",
+      "deck": "BRIDGE",
       "tier": "HIGH_REASONING",
       "defaultModel": "gemini-2.5-pro / claude-3-7-sonnet",
       "purpose": "Security guardrails, input validation, Semgrep static analysis, skill vetting."
     },
     "ux-design-enforcer": {
       "nature": "AI_AGENT",
-      "starfleetAlias": "Counselor Deanna Troi",
+      "navalAlias": "UX & Comms Officer",
+      "deck": "BRIDGE",
       "tier": "HIGH_REASONING",
       "defaultModel": "gemini-2.5-pro / claude-3-7-sonnet",
       "purpose": "Design system, CSS Modules, StyleSheet, micro-interactions, WCAG AAA accessibility."
     },
     "quality-health-auditor": {
       "nature": "AI_AGENT",
-      "starfleetAlias": "Dr. Beverly Crusher",
+      "navalAlias": "Chief Medical Officer",
+      "deck": "BRIDGE",
       "tier": "HIGH_REASONING",
       "defaultModel": "gemini-2.5-pro / claude-3-7-sonnet",
-      "purpose": "Code health, YAGNI minimalism, anti-bloat auditing, type-safety diagnostics."
+      "purpose": "Code health, KISS/YAGNI minimalism, anti-polling auditing, type-safety diagnostics."
     },
     "test-automation-runner": {
       "nature": "AI_AGENT",
-      "starfleetAlias": "Ensign Wesley Crusher",
+      "navalAlias": "Lower-Deck Runner",
+      "deck": "LOWER_DECK",
       "tier": "FAST_ECONOMY",
       "defaultModel": "gemini-2.5-flash / claude-3-5-haiku / qwen2.5-coder:7b",
-      "purpose": "Fast test execution, repetitive scripts, compiler passes, E2E runners."
+      "purpose": "Stateless fast test execution, repetitive scripts, compiler passes, simulation runners."
     },
     "meta-critic-evaluator": {
       "nature": "META_AGENT",
-      "starfleetAlias": "Q (The Q Continuum)",
+      "navalAlias": "Lower-Deck Evaluator",
+      "deck": "LOWER_DECK",
       "tier": "HIGH_REASONING",
+      "paraphraseTier": "FAST_ECONOMY",
+      "isolationMode": "ZERO_CONTEXT_READ_ONLY",
+      "preferCrossModelProvider": true,
       "defaultModel": "gemini-2.5-pro / o3-mini / claude-3-7-sonnet",
-      "purpose": "Independent external evaluation, architecture audits, bias challenge, edge-case trials."
+      "purpose": "Stateless zero-context cold review (Paraphraser, Critic, Verifier), bias challenge, doc-to-code parity."
     }
   },
   "tokenOptimizationPolicy": {
@@ -108,6 +120,7 @@
     "quarantineContextInSubagents": true,
     "lazyLoadSkills": true,
     "circuitBreakerMaxRetries": 5,
-    "zeroTheatricalFiller": true
+    "zeroTheatricalFiller": true,
+    "coldReviewVitalLogicOnly": true
   }
 }

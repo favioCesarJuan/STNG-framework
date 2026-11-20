@@ -1,7 +1,7 @@
-# 🏛️ architecture.md - Hexagonal Monorepo Architecture Blueprint
+# architecture.md - Hexagonal Monorepo Architecture Blueprint
 
 > **Framework**: STNG-Framework  
-> **Lead Architect**: Lt. Cmdr. Geordi La Forge & Lt. Cmdr. Data  
+> **Lead Architects**: `ArchitectureLead` (`Chief Engineer`) & `SystemsLogicAnalyst` (`Science & Logic Officer`)
 
 ---
 
@@ -11,8 +11,8 @@
 monorepo/
 ├── apps/
 │   ├── api/            # NestJS Backend (Hexagonal Architecture)
-│   ├── web/            # Next.js App Router (Supervisor / Corporate Web)
-│   ├── mobile/         # Expo SDK / React Native (Worker Mobile App)
+│   ├── web/            # Next.js App Router (Dashboard Web)
+│   ├── mobile/         # Expo SDK / React Native (Mobile App)
 │   ├── landing/        # Astro (Marketing & Public Portal)
 │   └── extension/      # Chrome/Brave Extension
 │

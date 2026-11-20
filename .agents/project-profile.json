@@ -16,13 +16,13 @@
   "recommendations": [
     {
       "category": "Seguridad & Regresiones",
-      "title": "Políticas Estrictas de Semgrep & Worf Shield",
+      "title": "Políticas Estrictas de Semgrep & Security Guardrail",
       "details": "Foco en estabilidad. Bloquea comandos destructivos y analiza dependencias con node-audit y SkillSpector para prevenir CVEs."
     },
     {
       "category": "Mantenibilidad",
       "title": "Preservación de Capas y Compatibilidad hacia Atrás",
-      "details": "Aplica el Protocolo Cola de Caballo (Ponytail): no introducir dependencias pesadas innecesarias y aislar refactors."
+      "details": "Aplica KISS + YAGNI: no introducir dependencias pesadas innecesarias y aislar refactors."
     }
   ]
 }

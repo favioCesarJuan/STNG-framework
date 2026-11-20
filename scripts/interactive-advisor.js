@@ -38,6 +38,7 @@ const c = {
   blue: '\x1b[34m'
 };
 
+/** @param {string} query @returns {Promise<string>} */
 function promptUser(query) {
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
   return new Promise(resolve => rl.question(query, ans => {
@@ -47,10 +48,13 @@ function promptUser(query) {
 }
 
 /**
- * Heuristically inspects a directory to determine project maturity and archetype
+ * Heuristically inspects a directory to determine project maturity and archetype.
+ * @param {string} [targetDir]
+ * @returns {import('../types/index.d.ts').LifecycleDetection}
  */
 export function detectProjectLifecycle(targetDir = process.cwd()) {
   const resolved = path.resolve(targetDir);
+  /** @param {string} rel */
   const exists = (rel) => fs.existsSync(path.join(resolved, rel));
 
   const hasPkg = exists('package.json');
@@ -83,8 +87,8 @@ export function detectProjectLifecycle(targetDir = process.cwd()) {
   const hasTests = exists('test') || exists('tests') || exists('__tests__') || exists('vitest.config.ts') || exists('jest.config.js');
   const hasLinter = exists('eslint.config.js') || exists('.eslintrc.json') || exists('biome.json') || exists('ruff.toml');
   const hasMcp = exists('.mcp/mcp-servers.config.json');
-  const hasCrew = exists('.agents/crew');
-  const hasSemgrep = exists('.agents/rules/semgrep-starfleet.yml') || exists('.semgrep.yml');
+  const hasCrew = exists('.agents/roles') || exists('.agents/crew');
+  const hasSemgrep = exists('.agents/rules/semgrep-governance.yml') || exists('.semgrep.yml');
   const hasGitHooks = exists('.git/hooks/pre-commit');
 
   return {
@@ -107,7 +111,10 @@ export function detectProjectLifecycle(targetDir = process.cwd()) {
 }
 
 /**
- * Returns tailored recommendations based on lifecycle stage and detected gaps
+ * Returns tailored recommendations based on lifecycle stage and detected gaps.
+ * @param {string} stage
+ * @param {Partial<import('../types/index.d.ts').LifecycleGaps>} gaps
+ * @returns {import('../types/index.d.ts').LifecycleRecommendation[]}
  */
 export function generateRecommendations(stage, gaps) {
   const recommendations = [];
@@ -132,7 +139,7 @@ export function generateRecommendations(stage, gaps) {
     recommendations.push({
       category: 'Desarrollo Activo',
       title: 'Blindaje de Flujo de Trabajo (Git Pre-Commit Hook)',
-      details: 'Activa scripts/pre-commit.sh para validar Semgrep, Worf Shield y linters en cada commit sin ralentizar el flujo.'
+      details: 'Activa scripts/pre-commit.sh para validar Semgrep, Security Guardrail y linters en cada commit sin ralentizar el flujo.'
     });
     if (!gaps.hasTests) {
       recommendations.push({
@@ -152,18 +159,18 @@ export function generateRecommendations(stage, gaps) {
     // MAINTENANCE
     recommendations.push({
       category: 'Seguridad & Regresiones',
-      title: 'Políticas Estrictas de Semgrep & Worf Shield',
+      title: 'Políticas Estrictas de Semgrep & Security Guardrail',
       details: 'Foco en estabilidad. Bloquea comandos destructivos y analiza dependencias con node-audit y SkillSpector para prevenir CVEs.'
     });
     recommendations.push({
       category: 'Mantenibilidad',
       title: 'Preservación de Capas y Compatibilidad hacia Atrás',
-      details: 'Aplica el Protocolo Cola de Caballo (Ponytail): no introducir dependencias pesadas innecesarias y aislar refactors.'
+      details: 'Aplica KISS + YAGNI: no introducir dependencias pesadas innecesarias y aislar refactors.'
     });
     if (!gaps.hasSemgrep) {
       recommendations.push({
         category: 'Auditoría SAST',
-        title: 'Activar Reglas Semgrep Starfleet',
+        title: 'Activar Reglas Semgrep Governance',
         details: 'Audita contra antipatrones de polling continuo, inyecciones de comandos y fugas de tokens.'
       });
     }
@@ -173,7 +180,10 @@ export function generateRecommendations(stage, gaps) {
 }
 
 /**
- * Saves project profile to .agents/project-profile.json
+ * Saves project profile to .agents/project-profile.json.
+ * @param {string} targetDir
+ * @param {import('../types/index.d.ts').LifecycleResult | Record<string, unknown>} profile
+ * @returns {string}
  */
 export function saveProjectProfile(targetDir, profile) {
   const agentsDir = path.join(targetDir, '.agents');
@@ -186,7 +196,10 @@ export function saveProjectProfile(targetDir, profile) {
 }
 
 /**
- * Runs the interactive or automatic advisor
+ * Runs the interactive or automatic advisor.
+ * @param {string} [targetDir]
+ * @param {{ yes?: boolean }} [options]
+ * @returns {Promise<import('../types/index.d.ts').LifecycleResult>}
  */
 export async function runLifecycleAdvisor(targetDir = process.cwd(), options = {}) {
   const resolved = path.resolve(targetDir);

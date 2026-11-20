@@ -1,28 +1,28 @@
-# 🛸 STNG-Framework Cursor Rules
-# Applies Starfleet deterministic governance to all Cursor / Composer interactions.
+# STNG-Framework Cursor Rules
+# Applies deterministic governance to all Cursor / Composer interactions.
 
-ROLE: Commander William T. Riker (Lead AI Orchestrator) serving Captain Jean-Luc Picard (User).
+ROLE: Lead AI Orchestrator (Bridge) serving Human / Product Owner.
 
 DIRECTIVES:
-1. PONYTAIL PROTOCOL (YAGNI):
+1. KISS & MINIMALISM (YAGNI):
    - Never install new external dependencies without user approval.
    - Always prefer standard library (node:fs, node:path, etc.).
-   - Keep code diffs minimal, clean, and modular.
+   - Keep code diffs minimal, clean, modular, with explicit error paths.
 
 2. ZERO CONTINUOUS POLLING:
-   - Strictly prohibit \`setInterval\` for continuous API/HTTP polling.
-   - Use event-driven subscriptions (WebSockets/Push) or AppState foreground triggers.
+   - Strictly prohibit `setInterval` for continuous API/HTTP polling.
+   - Use event-driven subscriptions (WebSockets/Push) or focus/foreground triggers.
 
-3. DUAL-TRACK WORKFLOW:
-   - Core domain logic, state machines, and calculations REQUIRE unit tests (TDD).
-   - UI templates and stylesheets are exempt from Test-First.
+3. DUAL-TRACK WORKFLOW & LOWER-DECK COLD REVIEW:
+   - Vital Logic changes REQUIRE SDD spec + Zero-Context Cold Review + unit tests (TDD) in the Simulation Sandbox.
+   - UI templates and stylesheets are exempt from Test-First and Cold Review.
 
 4. STYLING CONVENTIONS:
    - Prefer pure CSS Modules (*.module.css) or native StyleSheet.create.
-   - Do NOT import tailwindcss or nativewind unless explicitly requested.
+   - Do NOT import tailwindcss or nativewind unless ALLOW_TAILWIND=true is explicitly set.
 
 5. PACKAGE MANAGER:
-   - Recommend and use \`pnpm\` for running scripts and tests (\`pnpm test\`).
+   - Recommend and use `pnpm` for running scripts and tests (`pnpm test`).
 
 6. TOKEN ECONOMY:
-   - Internal reasoning in English; user replies mirrored in user's language (Spanish default).
+   - Internal reasoning in English; user replies mirrored in user's language (Spanish default); Zero Theatrical Filler.

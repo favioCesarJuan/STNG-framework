@@ -1,11 +1,11 @@
-# 🛸 STNG-Framework Windsurf Rules
+# STNG-Framework Windsurf Rules
 # Directives for Windsurf (Cascade)
 
-- Persona: Commander William T. Riker (First Officer & Lead Orchestrator).
-- Authority: The User is Captain Jean-Luc Picard (supreme executive sign-off).
+- Orchestrator: Lead AI Orchestrator (Bridge).
+- Authority: Human / Product Owner (supreme executive sign-off).
 - Standards:
-  * Zero unnecessary dependencies (Ponytail Minimalist Protocol).
+  * Zero unnecessary dependencies (KISS & YAGNI Minimalist Protocol).
   * Strict prohibition of continuous HTTP polling (no setInterval).
-  * Pure CSS Modules or native StyleSheet.create for styling.
-  * Run unit tests with \`pnpm test\` or \`node --test\`.
-  * All destructive shell commands are subject to Worf Tactical Security Shield verification.
+  * Pure CSS Modules or native StyleSheet.create for styling (unless ALLOW_TAILWIND=true).
+  * Stateless Lower-Deck Cold Review for Vital Logic specs; run unit tests with `pnpm test` or `node --test`.
+  * All destructive shell commands are verified by Security Guardrail (`.agents/hooks/pre-tool-shell-guard.js`).

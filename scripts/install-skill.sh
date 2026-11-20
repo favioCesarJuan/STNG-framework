@@ -1,11 +1,11 @@
 #!/bin/bash
 # ==============================================================================
-# 🛡️ LT. CMDR. WORF'S AUTOMATED SKILL AUDITOR & INSTALLER
+# SECURITY GUARDRAIL AUTOMATED SKILL AUDITOR & INSTALLER
 # ==============================================================================
-# Description: Enforces security protocols by auditing third-party skills for 
+# Description: Enforces security protocols by auditing third-party skills for
 #              prompt injection, malicious command executions, MCP tool poisoning,
 #              and credential exfiltration risks prior to copying them to .agents/skills/.
-#              Leverages Starfleet Lifecycle Auditor & NVIDIA SkillSpector.
+#              Leverages STNG Skill Security Scanner & NVIDIA SkillSpector.
 # ==============================================================================
 
 set -e
@@ -21,7 +21,7 @@ NC='\033[0m'
 BOLD='\033[1m'
 
 if [ -z "$1" ]; then
-  echo -e "${RED}${BOLD}🚨 [WORF]: Usage error. Command format is: $0 <path-to-skill-or-repository-url>${NC}"
+  echo -e "${RED}${BOLD}[SECURITY GUARD]: Usage error. Command format is: $0 <path-to-skill-or-repository-url>${NC}"
   exit 1
 fi
 
@@ -30,7 +30,7 @@ CLEAN_NAME=$(basename "$SKILL_SOURCE" | sed 's/\.git$//')
 SKILL_NAME=$(echo "$CLEAN_NAME" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]/-/g')
 TARGET_SKILL_DIR="$FRAMEWORK_ROOT/.agents/skills/$SKILL_NAME"
 
-echo -e "${CYAN}${BOLD}🛡️  Lt. Cmdr. Worf has been summoned to audit skill: $SKILL_NAME${NC}"
+echo -e "${CYAN}${BOLD}[SECURITY GUARD]: Auditing skill: $SKILL_NAME${NC}"
 echo -e "Target path for audit: ${BOLD}$SKILL_SOURCE${NC}"
 echo -e "------------------------------------------------------------"
 
@@ -40,7 +40,7 @@ AUDIT_TARGET="$SKILL_SOURCE"
 # Check if source is a remote git URL
 if [[ "$SKILL_SOURCE" =~ ^https?:// ]] || [[ "$SKILL_SOURCE" =~ ^git@ ]]; then
   TEMP_CLONE=$(mktemp -d)
-  echo -e "${YELLOW}📥 [WORF]: Cloning remote skill into quarantined sandbox: $TEMP_CLONE...${NC}"
+  echo -e "${YELLOW}[SECURITY GUARD]: Cloning remote skill into quarantined sandbox: $TEMP_CLONE...${NC}"
   git clone --depth 1 "$SKILL_SOURCE" "$TEMP_CLONE" >/dev/null 2>&1
   AUDIT_TARGET="$TEMP_CLONE"
 fi
@@ -50,15 +50,15 @@ node "$FRAMEWORK_ROOT/.agents/hooks/skill-security-scanner.js" "$AUDIT_TARGET"
 
 # 2. Run deep inspection with NVIDIA SkillSpector if installed
 if command -v skillspector >/dev/null 2>&1; then
-  echo -e "${YELLOW}🔬 [WORF]: Engaging NVIDIA SkillSpector deep taint & security scan...${NC}"
+  echo -e "${YELLOW}[SECURITY GUARD]: Engaging NVIDIA SkillSpector deep taint & security scan...${NC}"
   skillspector scan "$AUDIT_TARGET" --min-score 85
-  echo -e "${GREEN}✅ [WORF]: NVIDIA SkillSpector certified skill safety (Score >= 85).${NC}"
+  echo -e "${GREEN}[SECURITY GUARD]: NVIDIA SkillSpector certified skill safety (Score >= 85).${NC}"
 else
-  echo -e "${CYAN}ℹ️  [WORF]: NVIDIA SkillSpector CLI not installed locally. Native Starfleet audit passed.${NC}"
+  echo -e "${CYAN}[SECURITY GUARD]: NVIDIA SkillSpector CLI not installed locally. Native STNG audit passed.${NC}"
 fi
 
 # 3. Securely deploy audited skill to .agents/skills/
-echo -e "${CYAN}📦 [WORF]: Deploying audited skill to: $TARGET_SKILL_DIR...${NC}"
+echo -e "${CYAN}[SECURITY GUARD]: Deploying audited skill to: $TARGET_SKILL_DIR...${NC}"
 mkdir -p "$TARGET_SKILL_DIR"
 
 if [ -f "$AUDIT_TARGET" ]; then
@@ -72,5 +72,5 @@ if [ -n "$TEMP_CLONE" ] && [ -d "$TEMP_CLONE" ]; then
   rm -rf "$TEMP_CLONE"
 fi
 
-echo -e "${GREEN}${BOLD}✅ [WORF]: Skill '$SKILL_NAME' successfully installed and armed in Starfleet tactical perimeter.${NC}"
+echo -e "${GREEN}${BOLD}[SECURITY GUARD]: Skill '$SKILL_NAME' successfully installed and verified.${NC}"
 exit 0

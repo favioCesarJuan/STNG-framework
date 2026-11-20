@@ -19,13 +19,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 import readline from 'node:readline';
-import { execSync, spawnSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { evaluateSecurity } from '../.agents/hooks/pre-tool-shell-guard.js';
 import { verifySkillIntegrity } from '../.agents/hooks/skill-security-scanner.js';
 import { auditNodeRuntime } from './node-runtime-cve-check.js';
 
 const UPSTREAM_REPO = 'https://github.com/favioCesarJuan/STNG-framework.git';
 
+/** @param {string} query @returns {Promise<string>} */
 function promptUser(query) {
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
   return new Promise(resolve => rl.question(query, ans => {
@@ -34,25 +35,32 @@ function promptUser(query) {
   }));
 }
 
+/** @param {string} targetDir @returns {string} */
 export function getInstalledVersion(targetDir) {
   const lockFile = path.join(targetDir, '.agents/framework-lock.json');
   if (fs.existsSync(lockFile)) {
     try {
       const lock = JSON.parse(fs.readFileSync(lockFile, 'utf-8'));
       return lock.version || '1.0.0';
-    } catch {}
+    } catch { /* fallback: invalid framework-lock.json */ }
   }
   const pkgFile = path.join(targetDir, 'package.json');
   if (fs.existsSync(pkgFile)) {
     try {
       const pkg = JSON.parse(fs.readFileSync(pkgFile, 'utf-8'));
       if (pkg.name === 'stng-framework') return pkg.version || '1.0.0';
-    } catch {}
+    } catch { /* fallback: invalid package.json */ }
   }
   return '1.0.0';
 }
 
+/**
+ * Evaluates a quarantined update candidate against the 4 security gates.
+ * @param {string} quarantinedDir
+ * @returns {Promise<{ passed: boolean, gateResults: import('../types/index.d.ts').SecurityGateOutcome[] }>}
+ */
 export async function runQuadrupleSecurityGate(quarantinedDir) {
+  /** @type {import('../types/index.d.ts').SecurityGateOutcome[]} */
   const gateResults = [];
 
   // Gate 1: Shell & Path Guard
@@ -63,21 +71,30 @@ export async function runQuadrupleSecurityGate(quarantinedDir) {
     for (const f of files) {
       const rel = f.toString();
       const full = path.join(quarantinedDir, rel);
-      // Skip self-test fixtures and test suites that intentionally contain attack patterns
-      if (rel.startsWith('test/') || rel.startsWith('examples/') || rel.endsWith('pre-tool-shell-guard.js')) continue;
+      // Skip dependencies, VCS, self-test fixtures, and test suites that intentionally contain attack patterns
+      if (
+        rel.startsWith('node_modules/') ||
+        rel.startsWith('.git/') ||
+        rel.startsWith('test/') ||
+        rel.startsWith('examples/') ||
+        rel.endsWith('pre-tool-shell-guard.js')
+      ) continue;
       if (fs.existsSync(full) && fs.statSync(full).isFile() && (full.endsWith('.js') || full.endsWith('.sh'))) {
         const content = fs.readFileSync(full, 'utf-8');
-        const verdict = evaluateSecurity({ tool: 'run_command', args: { CommandLine: content } });
+        const scanContent = full.endsWith('.sh')
+          ? content.split(/\r?\n/).filter(l => !l.trim().startsWith('#')).join('\n')
+          : content;
+        const verdict = evaluateSecurity({ tool: 'run_command', args: { CommandLine: scanContent } });
         if (!verdict.allowed) {
           gate1Passed = false;
-          gate1Details = verdict.reason;
+          gate1Details = verdict.reason || 'Blocked by pre-tool security guard.';
           break;
         }
       }
     }
   } catch (err) {
     gate1Passed = false;
-    gate1Details = err.message;
+    gate1Details = err instanceof Error ? err.message : String(err);
   }
   gateResults.push({ gate: 'Pre-Tool Shell & Path Guard', passed: gate1Passed, details: gate1Details });
 
@@ -137,6 +154,12 @@ export async function runQuadrupleSecurityGate(quarantinedDir) {
   return { passed: allPassed, gateResults };
 }
 
+/**
+ * Runs a consulted, quarantined framework update workflow.
+ * @param {string} [targetDir]
+ * @param {import('../types/index.d.ts').FrameworkUpdateOptions} [options]
+ * @returns {Promise<import('../types/index.d.ts').FrameworkUpdateResult>}
+ */
 export async function runFrameworkUpdate(targetDir = process.cwd(), options = {}) {
   const root = path.resolve(targetDir);
   const currentVersion = getInstalledVersion(root);
@@ -150,9 +173,15 @@ export async function runFrameworkUpdate(targetDir = process.cwd(), options = {}
   try {
     console.log(`Inspecting upstream repository for updates...`);
     if (fs.existsSync(source) && fs.statSync(source).isDirectory()) {
-      fs.cpSync(source, quarantineDir, { recursive: true });
+      fs.cpSync(source, quarantineDir, {
+        recursive: true,
+        filter: (srcPath) => {
+          const base = path.basename(srcPath);
+          return base !== 'node_modules' && base !== '.git' && !base.startsWith('.agents.backup.');
+        }
+      });
     } else {
-      execSync(`git clone --depth 1 "${source}" "${quarantineDir}" >/dev/null 2>&1`);
+      execFileSync('git', ['clone', '--depth', '1', source, quarantineDir], { stdio: 'ignore' });
     }
 
     const upstreamPkg = JSON.parse(fs.readFileSync(path.join(quarantineDir, 'package.json'), 'utf-8'));
@@ -253,8 +282,8 @@ export async function runFrameworkUpdate(targetDir = process.cwd(), options = {}
 
     console.log(`Verifying post-update integrity...`);
     try {
-      execSync(`node "${path.join(localAgents, 'hooks/pre-tool-shell-guard.js')}" --test`, { stdio: 'ignore' });
-      execSync(`node "${path.join(localAgents, 'hooks/post-edit-policy-check.js')}" --test`, { stdio: 'ignore' });
+      execFileSync(process.execPath, [path.join(localAgents, 'hooks/pre-tool-shell-guard.js'), '--test'], { stdio: 'ignore' });
+      execFileSync(process.execPath, [path.join(localAgents, 'hooks/post-edit-policy-check.js'), '--test'], { stdio: 'ignore' });
       console.log(`\n\x1b[32m\x1b[1m[OK]: STNG-Framework updated to v${upstreamVersion}.\x1b[0m\n`);
       return { success: true, version: upstreamVersion, backupDir };
     } catch (testErr) {
@@ -264,7 +293,8 @@ export async function runFrameworkUpdate(targetDir = process.cwd(), options = {}
         fs.cpSync(backupDir, localAgents, { recursive: true });
         console.log(`Rollback completed from backup.`);
       }
-      return { success: false, rollback: true, error: testErr.message };
+      const errMsg = testErr instanceof Error ? testErr.message : String(testErr);
+      return { success: false, rollback: true, error: errMsg };
     }
   } finally {
     if (fs.existsSync(quarantineDir)) {
@@ -277,9 +307,10 @@ if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(new URL(im
   const checkOnly = process.argv.includes('--check');
   const autoYes = process.argv.includes('--yes') || process.argv.includes('-y');
   const srcArg = process.argv.find(a => a.startsWith('--source='));
-  const source = srcArg ? srcArg.split('=')[1] : null;
+  const source = srcArg ? srcArg.slice('--source='.length) : null;
+  const targetArg = process.argv.slice(2).find(a => !a.startsWith('-')) || process.cwd();
 
-  runFrameworkUpdate(process.cwd(), { checkOnly, yes: autoYes, source }).then(res => {
+  runFrameworkUpdate(targetArg, { checkOnly, yes: autoYes, source }).then(res => {
     if (res.aborted || res.success === false) {
       process.exit(1);
     }

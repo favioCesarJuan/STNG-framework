@@ -24,10 +24,11 @@ Thumbs.db
 *.swo
 
 # Runtime outputs & Logs
+.agents/.env
+.agents/theme.local.json
+.agent-theme.local.json
 .agents/audit_log.json
 .agents/audit_log.md
-.agents/captains_log.json
-.agents/captains_log.md
 .agents/.circuit_state.json
 logs/
 *.log

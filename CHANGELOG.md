@@ -1,4 +1,4 @@
-# 📜 Changelog: STNG-Framework
+# Changelog: STNG-Framework
 
 All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
@@ -6,12 +6,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.1.0] - 2026-11-20
+
+### Added
+- **Zero-Build TypeScript Verification (`tsconfig.json`, `types/index.d.ts`, JSDoc `strict: true`)**: Added strict `tsc --noEmit` static checking (`checkJs: true`, `allowJs: true`) across all 14 JS modules while keeping `.agents/hooks/*.js` JSDoc self-contained and maintaining `0` external runtime dependencies.
+- **CI & Pre-Commit Integration**: Added a dedicated `typecheck` job in `.github/workflows/ci.yml` and conditional `tsc --noEmit` checking in `scripts/pre-commit.sh`.
+
+### Fixed
+- **Consulted Updater Hardening (`scripts/framework-updater.js`, `bin/stng.js`)**: Excluded `node_modules/`, `.git/`, and `.agents.backup.*` during local quarantine staging, stripped shell `#` comment lines in Gate 1 scans to prevent false positives on documentation comments, added `--source=` forwarding in `bin/stng.js`, and added optional target directory support for direct CLI runs.
+
+---
+
+## [2.0.0] - 2026-11-19
+
+### Added
+- **Public-Domain Dual Themes + Private Local Theme Loader (`.agents/hooks/theme-loader.js`)**: Standardized `standard` (corporate technical), `naval` (public-domain Bridge / Lower Deck / Sim Deck), and `local` (`AGENT_THEME=local` / `--theme=local` loading untracked local JSON overrides outside Git).
+- **Zero-Context Cold Review & SDD Workflow**: Added stateless Lower-Deck 3-gate Cold Review (`Paraphraser`, `Critic`, `Verifier`), `templates/spec.md`, and `SPEC_AUDIT_EVENTS` in `.agents/hooks/audit-log-writer.js`.
+- **KISS Simplicity Protocol & Heuristics**: Added `evaluateKissHeuristics` (`KISS_DEEP_NESTING`, `KISS_EXCESSIVE_PARAMS`, `KISS_LONG_FUNCTION`, `KISS_EXCESSIVE_FILE_LENGTH`, `KISS_SWALLOWED_ERROR`) to `.agents/hooks/post-edit-policy-check.js` and `.agents/rules/kiss-simplicity-protocol.md`.
+- **Hardened CLI & Guards**: Added `scan-skill`, `cve-check`, and `theme` subcommands to `bin/stng.js`; replaced shell interpolations with `execFileSync`; added path traversal checks and `strict`/`fast-track` rigidity modes to `pre-tool-shell-guard.js`.
+
+---
+
 ## [1.2.1] - 2026-10-29
 
 ### Added
-- **Semgrep Static AST Guardrails**: Created `.agents/rules/semgrep-starfleet.yml` enforcing Ponytail minimalism (banning continuous polling `setInterval`, enforcing `node:*` imports, blocking unsafe `child_process.exec` and credential leaks).
-- **Node.js Runtime CVE Auditor (`scripts/worf-node-audit.js`)**: Deterministic host runtime vulnerability scanner querying SecurityVulnerability.io / Node.js CVE baselines with zero external dependencies.
-- **NVIDIA SkillSpector Protocol**: Multi-stage skill security auditing in `scripts/install-skill.sh` and `.agents/hooks/skill-lifecycle-auditor.js` preventing prompt injection overrides, MCP tool poisoning, and data exfiltration.
+- **Semgrep Static AST Guardrails**: Added `.semgrep.yml` enforcing clean architecture rules (banning continuous `setInterval` polling, enforcing `node:` imports, blocking unsafe `child_process.exec` and credential leaks).
+- **Node.js Runtime CVE Auditor (`scripts/node-runtime-cve-check.js`)**: Deterministic host runtime vulnerability scanner checking Node.js LTS CVE baselines offline.
+- **Skill Security Scanner**: Multi-stage skill security auditing in `scripts/install-skill.sh` and `.agents/hooks/skill-security-scanner.js` (with optional NVIDIA SkillSpector CLI integration).
 - **Pre-Commit & CI Automation**: Integrated Semgrep AST analysis and Node.js runtime CVE validation into `scripts/pre-commit.sh` and `.github/workflows/ci.yml`.
 
 ---
@@ -19,37 +40,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.2.0] - 2026-10-07
 
 ### Added
-- **GitHub Security Lab Hardening**: Implemented official security best practices via `gh-secure` (Private Vulnerability Reporting, Secret Scanning Push Protection, Dependabot Alerts & Updates, CodeQL semantic static analysis).
-- **Official Security Policy (`SECURITY.md`)**: Established coordinated disclosure procedures, supported release matrix, and encrypted vulnerability advisory channel.
-- **Universal Operating Manual (`MANUAL.md`)**: Created master operational guide for human developers and any AI tool or platform.
-- **Cross-Platform AI Bridges**: Generated dedicated instruction contracts for Anthropic Claude (`CLAUDE.md`), Cursor IDE (`.cursorrules`), Windsurf (`.windsurfrules`), GitHub Copilot (`.copilot-instructions.md`), and local models (`rules.md`).
-- **Unified Starfleet CLI (`bin/stng.js`)**: Introduced executable `npx stng init` command configuring full governance, models, and bridges in a single step with zero external dependencies.
+- **Repository Security Hardening**: Documented coordinated vulnerability disclosure in `SECURITY.md` and added static analysis workflows.
+- **Universal Operating Manual (`MANUAL.md`)**: Master operational guide for human developers and supported AI tools.
+- **Cross-Platform AI Bridges**: Generated instruction contracts for Anthropic Claude (`CLAUDE.md`), Cursor IDE (`.cursorrules`), Windsurf (`.windsurfrules`), GitHub Copilot (`.copilot-instructions.md`), and local models (`rules.md`).
+- **Unified STNG CLI (`bin/stng.js`)**: Introduced `stng init` configuring hooks, models, and bridges in a single step with zero external dependencies.
 
 ---
 
 ## [1.1.0] - 2026-10-02
 
 ### Added
-- **Native Automated Test Suite (`node:test`)**: Zero-dependency comprehensive test suite in `test/hooks.test.js` covering Worf Security Shield, Crusher Health Check, Captain's Log, Skill Lifecycle Auditor, and Cascade Evaluator.
-- **Continuous Integration (CI)**: Added GitHub Actions workflow (`.github/workflows/ci.yml`) validating tests across Node.js 18.x, 20.x, and 22.x.
-- **Multi-Model Provider Matrix**: Expanded `config/models.config.json` with ready-to-use profiles for Google Gemini, Anthropic Claude, OpenAI, DeepSeek, and Local Ollama / vLLM.
-- **Adaptive Style Governance**: Enhanced `crusher-health-check.js` to support `ALLOW_TAILWIND=true` for projects with legitimate mixed or Tailwind styling.
-- **Community Governance Documentation**: Added comprehensive `CONTRIBUTING.md` and `CHANGELOG.md`.
-- **Recommended Package Manager**: Recommended `pnpm` in `package.json` (`packageManager: pnpm@9.15.0`) and added detection in `install.sh` for up to 70% disk savings.
-
-### Changed
-- **Hardened Installer (`install.sh`)**: Added automatic backup of existing `.agents` configurations, detection of `pnpm`, and flags (`--no-backup`, `--allow-tailwind`).
-- **Resilient Operational Scripts**: Upgraded `scripts/*.sh` to resolve `FRAMEWORK_ROOT` dynamically, allowing execution from any subdirectory in monorepos.
-- **Isolated Hook Execution**: Patched hook CLI runners to prevent background execution when imported as modules during unit testing.
+- **Native Automated Test Suite (`node:test`)**: Zero-dependency test suite in `test/hooks.test.js`.
+- **Continuous Integration (CI)**: GitHub Actions workflow (`.github/workflows/ci.yml`) validating Node.js 18, 20, and 22.
+- **Multi-Model Provider Matrix**: Expanded `config/models.config.json` and `config/providers.json` with profiles for Gemini, Claude, OpenAI, DeepSeek, and Local Ollama / vLLM.
+- **Adaptive Style Governance**: Enhanced `post-edit-policy-check.js` to support `ALLOW_TAILWIND=true`.
+- **Recommended Package Manager**: Recommended `pnpm` in `package.json` and `install.sh`.
 
 ---
 
 ## [1.0.0] - 2026-09-29
 
 ### Added
-- **Initial Starfleet Engine**: Hierarchical multi-agent crew with dual corporate mapping (Picard, Riker, Data, Geordi, Worf, Troi, Crusher, Wesley, Q).
-- **Deterministic Hooks**: `worf-security-shield.js`, `crusher-health-check.js`, `captains-log-writer.js`, `skill-lifecycle-auditor.js`, `cascade-evaluator.js`.
-- **Token Economics (6 Layers)**: Asymmetric 80/20 routing, lazy loading, context quarantine, knowledge graph scoping, circuit breakers, and cognitive language protocol.
-- **Consolidated Canonical Skills**: 7 specialized domains in `.agents/skills/`.
-- **One-Line Installer**: `install.sh` for fast deployment.
-- **Bilingual Documentation**: Complete `README.md` and `README.es.md`.
+- **Initial Governance Engine**: Multi-agent role taxonomy with 9 specialized roles across orchestration, logic, architecture, security, UX, quality, test execution, and adversarial meta-review.
+- **Deterministic Hooks**: `pre-tool-shell-guard.js`, `post-edit-policy-check.js`, `edit-circuit-breaker.js`, `audit-log-writer.js`, `skill-security-scanner.js`, and `monorepo-cascade-scope.js`.
+- **Token Economics & Canonical Skills**: Consolidated skill domains in `.agents/skills/` and English reasoning core protocol.

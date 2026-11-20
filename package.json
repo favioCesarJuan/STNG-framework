@@ -1,12 +1,14 @@
 {
   "name": "stng-framework",
-  "version": "2.0.0",
-  "description": "Deterministic Agent Governance Runtime: pre-tool shell & path guards, edit circuit breakers, post-edit policy checks, skill security scanning, and monorepo cascade scoping.",
+  "version": "2.1.0",
+  "description": "Structured Tactical Node Governance (STNG) — Deterministic Agent Governance Runtime: pre-tool shell & path guards, edit circuit breakers, post-edit policy checks, skill security scanning, and monorepo cascade scoping.",
   "main": "index.js",
+  "types": "./types/index.d.ts",
   "type": "module",
   "scripts": {
     "init": "node ./bin/stng.js init",
     "test": "node --test",
+    "typecheck": "tsc --noEmit",
     "demo": "node ./examples/quickstart-demo.js",
     "guard:shell": "node .agents/hooks/pre-tool-shell-guard.js --test",
     "guard:node": "node scripts/node-runtime-cve-check.js --test",
@@ -42,5 +44,9 @@
   "bin": {
     "stng": "./bin/stng.js",
     "stng-framework": "./bin/stng.js"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "typescript": "^7.0.2"
   }
 }

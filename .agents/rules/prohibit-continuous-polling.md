@@ -1,9 +1,9 @@
-# 🛑 Architectural Directive: Prohibition of Continuous Polling (No Continuous Polling)
+# Architectural Directive: Prohibition of Continuous Polling (No Continuous Polling)
 
-**TARGET:** All AI agents (Antigravity / Gemini CLI), subagents, and developers.  
-**AUTHORITY:** Captain Jean-Luc Picard & Dr. Beverly Crusher (Ponytail Protocol / Health & Efficiency).  
+**TARGET:** All AI agents, subagents, and developers.  
+**AUTHORITY:** `Human / Product Owner` (`Captain`) & `QualityHealthAuditor` (`Chief Medical Officer`).  
 **STATUS:** PERMANENT, DETERMINISTIC, NON-NEGOTIABLE.  
-**ENFORCED BY:** `.agents/hooks/crusher-health-check.js` (`postInvocation`).
+**ENFORCED BY:** `.agents/hooks/post-edit-policy-check.js` (`postInvocation`).
 
 ---
 
@@ -14,14 +14,14 @@ It is **STRICTLY FORBIDDEN** to implement, suggest, or scaffold continuous perio
 
 ## 2. Technical Justification
 1. **Battery and CPU Drain on Mobile Devices:** Continuous network timers keep mobile radios (LTE/5G/Wi-Fi) powered on and repeatedly wake the CPU, severely degrading battery lifespan and consuming cellular data allowances.
-2. **Useless Saturation of Serverless Infrastructure:** Thousands of periodic requests looping to query an intermittently changing state flood serverless handlers (Vercel/NestJS), driving up compute costs, latency, and rate limits.
-3. **Destruction of the Observer Pattern:** Modern reactive architectures rely on event-driven mechanics (WebSockets / Push / DeviceEventEmitter). Continuous polling breaks reactive architecture purity.
+2. **Useless Saturation of Serverless Infrastructure:** Thousands of periodic requests looping to query an intermittently changing state flood serverless handlers, driving up compute costs, latency, and rate limits.
+3. **Destruction of the Observer Pattern:** Modern reactive architectures rely on event-driven mechanics (WebSockets / SSE / Push / EventBus). Continuous polling breaks reactive architecture purity.
 
 ---
 
 ## 3. Official & Mandatory Architecture (The Synchronization Standard)
 
-For any synchronization between Web, Mobile, and Personal views, agents MUST apply **ONLY** the following model:
+For any synchronization between Web, Mobile, and backend views, agents MUST apply **ONLY** the following model:
 
 ```
                                   [Server / API]

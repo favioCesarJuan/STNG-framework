@@ -1,9 +1,9 @@
-# 📐 rules.md - Canonical Programming & Quality Rules
+# rules.md - Canonical Programming & Quality Rules
 
 > **Framework**: STNG-Framework  
-> **Status**: Approved by Captain Picard  
+> **Status**: Approved by Human / Product Owner  
 > **Scope**: Entire Monorepo (`apps/*`, `packages/*`)  
-> **Enforcement**: Automated CI Pipelines & Antigravity Model Hooks  
+> **Enforcement**: Automated CI Pipelines & Deterministic Model Hooks  
 
 ---
 
@@ -16,7 +16,7 @@ The Test-First cycle (*Red -> Green -> Refactor*) is **mandatory** prior to writ
 - Offline synchronization, outbox queues, idempotency keys, and UUIDv7 conflict resolution.
 - Security validations, cryptographic hashchains, and geofence perimeter checks.
 
-> **Golden Rule**: No PR altering vital business domain code will be approved without an automated unit test proving expected behavior.
+> **Golden Rule**: No PR altering vital business domain code will be approved without SDD Cold Review (`Lower-Deck Evaluator`) and automated unit tests proving expected behavior.
 
 ### 1.2. Fast Path (Exemption from Test-First)
 Exempt from Test-First requirements:
@@ -42,16 +42,16 @@ In strict accordance with `.agents/rules/prohibit-continuous-polling.md`:
 
 ## 3. Styling Governance: Strict CSS3 & Native StyleSheet
 
-### 3.1. Absolute Prohibition of TailwindCSS & NativeWind
-- Do not install or import `tailwindcss` or `nativewind` anywhere in the monorepo.
+### 3.1. Conditional Prohibition of TailwindCSS & NativeWind
+- Do not install or import `tailwindcss` or `nativewind` unless `ALLOW_TAILWIND=true` is explicitly configured.
 - **Web (`apps/web`, `apps/landing`)**: Use **CSS Modules** (`*.module.css`) with standard CSS variables exported from `@repo/ui-tokens`.
 - **Mobile (`apps/mobile`)**: Use native **`StyleSheet.create({ ... })`** consuming central design tokens.
 
 ### 3.2. Canonical Chromatic Rule (60-30-10)
-- **60% Base Surface**: Light `#F9FAFB` / Dark Obsidian `#0F1117`.
-- **30% Primary Brand**: Space Navy `#1E3A8A` / Porcelain Blue `#6B90D8`.
-- **10% Vital Accent**: Malachite Green `#14532D` / Sage Green `#52A379`.
+- **60% Base Surface**: Light `#F9FAFB` / Dark Slate `#0F1117`.
+- **30% Primary Brand**: Cobalt Navy `#1E3A8A` / Porcelain Blue `#6B90D8`.
+- **10% Vital Accent**: Forest Green `#14532D` / Sage Green `#52A379`.
 
-### 3.3. Anti-AI Slop Aesthetic
-- Reject tacky neon glows, generic purple-cyan gradients, and continuous breathing animation loops.
+### 3.3. Visual Restraint & Accessibility
+- Reject neon glows, generic purple-cyan gradients, and continuous breathing animation loops.
 - Use natural spring physics (Apple HIG standards) with tactile press scale between `0.97 - 0.98`.

@@ -1,21 +1,69 @@
-# 📝 spec.md - Technical Specification & Operational Invariants
+---
+id: spec-001
+title: Feature or Change Title
+status: DRAFT
+track: VITAL_LOGIC
+author: Lead AI Orchestrator (Bridge)
+reviewer: Meta-Critic Evaluator (Lower-Deck Zero-Context)
+updated: YYYY-MM-DD
+target_files:
+  - src/example/module.js
+---
 
-> **Framework**: STNG-Framework  
-> **Custodian**: Commander William T. Riker & Lt. Cmdr. Data  
+# Technical Specification & Operational Invariants
+
+> **Framework**: STNG-Framework / ISS-Enterprise  
+> **Lifecycle**: `DRAFT -> IN_REVIEW -> APPROVED -> SUPERSEDED`
 
 ---
 
-## 1. System Requirements & Compatibility
-- **Runtime**: Node.js `>= 18.0.0`
+## 1. Problem & Objectives (Heilmeier Core)
+- **Objective**: Describe what this change accomplishes in plain technical language.
+- **Current Baseline & Failure**: What exists today and what specific gap or failure motivates this change.
+- **Proposed Mechanism**: Core design decision and why it works.
+
+---
+
+## 2. Scope & Explicit Non-Goals
+- **In Scope**:
+  - Concrete deliverables and boundaries.
+- **Out of Scope (Non-Goals)**:
+  - Explicitly state what will NOT be built or refactored in this spec.
+
+---
+
+## 3. System Requirements & Invariants
+- **Runtime**: Node.js `>= 18.0.0` (zero external runtime dependencies for core governance)
 - **Package Manager**: `pnpm >= 9.0.0`
-- **TypeScript**: `>= 5.4.0` in strict mode
-- **Mobile**: Expo SDK `>= 51`, React Native `>= 0.74`
-- **Web**: Next.js `>= 14.2` (App Router)
+- **Security & Compliance Invariants**:
+  - No continuous `setInterval` HTTP polling; prefer event-driven hooks/streams.
+  - Validate and sanitize all paths and shell inputs before execution.
+  - Preserve backwards compatibility of existing CLI commands and ESM exports.
 
 ---
 
-## 2. Security & Compliance Invariants
-- All client communications over TLS 1.3.
-- Sensitive authentication tokens stored in iOS Keychain and Android Keystore.
-- Cryptographic hashchains must utilize SHA-256 with nonce verification.
-- Offline records generated with client-side UUIDv7 for deterministic time-ordering.
+## 4. Target Files & Interface Contracts
+| File Path | Action (`MODIFY` \| `NEW`) | Contract / Exported Symbols |
+| :--- | :--- | :--- |
+| `src/example/module.js` | `MODIFY` | `exampleFunction(input, options)` |
+
+---
+
+## 5. Risks, Failure Modes & Edge Cases
+- **Offline / Missing Binaries**: Fallback behavior when external tools are absent.
+- **Malformed Inputs / Boundary Conditions**: Validation rules and explicit error handling.
+- **Token / Performance Budget**: Impact on context size and runtime latency.
+
+---
+
+## 6. Verification & Acceptance Criteria
+- Exact runnable test and audit commands (e.g., `node --test`, `node ./bin/iss.js doctor`) executed in the Simulation Sandbox (`Sim Deck`).
+- Deterministic pass conditions for each requirement.
+
+---
+
+## 7. Cold Review Log (Lower-Deck Zero-Context Gates)
+- **Gate 1 (Lower-Deck Paraphraser)**: `PENDING`
+- **Gate 2 (Lower-Deck Critic — Adversarial & Heilmeier)**: `PENDING`
+- **Gate 3 (Lower-Deck Verifier — Implementation Readiness)**: `PENDING`
+- **Human Sign-Off (`APPROVED`)**: `PENDING`

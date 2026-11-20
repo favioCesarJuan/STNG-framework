@@ -12,14 +12,27 @@ export {
   checkFilePolicy,
   POLICY_RULES,
   diagnoseFileContent,
-  HEALTH_RULES
+  HEALTH_RULES,
+  KISS_DEFAULTS,
+  KISS_RULES,
+  evaluateKissHeuristics
 } from './.agents/hooks/post-edit-policy-check.js';
 export {
   appendAuditLog,
   formatAuditTimestamp,
   appendLogEntry,
-  calculateStardate
+  formatMissionClock,
+  computeMissionDateCode,
+  SPEC_AUDIT_EVENTS
 } from './.agents/hooks/audit-log-writer.js';
+export {
+  resolveThemeMode,
+  loadThemeConfig,
+  getHookLabel,
+  getZoneName,
+  getRoleAlias,
+  ROLES_CATALOG
+} from './.agents/hooks/theme-loader.js';
 export {
   scanSkillSecurity,
   verifySkillIntegrity,
@@ -39,4 +52,4 @@ export {
 export { auditNodeRuntime, SECURE_BASELINE } from './scripts/node-runtime-cve-check.js';
 export { runFrameworkUpdate, getInstalledVersion } from './scripts/framework-updater.js';
 export { runLifecycleAdvisor, detectProjectLifecycle, PROJECT_LIFECYCLE } from './scripts/interactive-advisor.js';
-export { displayLogStats, runInit, printCrewThemeNotice } from './bin/stng.js';
+export { displayLogStats, runInit, printCrewThemeNotice, printThemeNotice } from './bin/stng.js';

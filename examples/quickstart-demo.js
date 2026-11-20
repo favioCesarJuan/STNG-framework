@@ -7,7 +7,7 @@
  * 1. Pre-tool shell guard blocking `rm -rf /` and protected path writes.
  * 2. Post-edit policy check catching continuous `setInterval` polling.
  * 3. Audit log writer recording structured JSON + Markdown ledger in a temp dir.
- * 4. Optional `--theme=starfleet` toggle (zero extra output tokens).
+ * 4. Optional `--theme=standard|naval|local` toggle (zero extra output tokens).
  * ==============================================================================
  */
 
@@ -16,17 +16,19 @@ import os from 'node:os';
 import path from 'node:path';
 import { evaluateSecurity } from '../.agents/hooks/pre-tool-shell-guard.js';
 import { checkFilePolicy } from '../.agents/hooks/post-edit-policy-check.js';
-import { appendAuditLog } from '../.agents/hooks/audit-log-writer.js';
+import { appendAuditLog, formatMissionClock } from '../.agents/hooks/audit-log-writer.js';
+import { resolveThemeMode, getHookLabel, getZoneName } from '../.agents/hooks/theme-loader.js';
 
-const theme = process.argv.includes('--theme=starfleet') ? 'starfleet' : 'standard';
-if (theme === 'starfleet') {
-  process.env.AGENT_THEME = 'starfleet';
+const explicitThemeArg = process.argv.find(a => a.startsWith('--theme='));
+const theme = resolveThemeMode(process.argv.slice(2));
+if (explicitThemeArg) {
+  process.env.AGENT_THEME = theme;
 }
 
 const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'stng-demo-'));
 
 try {
-  console.log(`\n=== STNG-FRAMEWORK QUICKSTART DEMO (theme=${theme}) ===\n`);
+  console.log(`\n=== ${getHookLabel('sim')} STNG-FRAMEWORK QUICKSTART DEMO (theme=${theme}, env=${getZoneName('simBay')}) ===\n`);
 
   // 1. Pre-tool shell guard
   const blockedCmd = evaluateSecurity({ tool: 'run_command', args: { CommandLine: 'rm -rf /' } });
@@ -57,8 +59,8 @@ try {
   console.log('3. Audit Log Written:');
   console.log(`   - JSON: ${path.join(tmpDir, '.agents/audit_log.json')}`);
   console.log(`   - MD:   ${path.join(tmpDir, '.agents/audit_log.md')}`);
-  console.log(`   - Entry ID: ${entry.id} | Timestamp: ${entry.stardate ? `Stardate ${entry.stardate}` : entry.timestamp}\n`);
-  console.log('=== DEMO COMPLETE (<1s, 0 external dependencies) ===\n');
+  console.log(`   - Entry ID: ${entry.id} | Timestamp: ${entry.missionClock ? formatMissionClock() : entry.timestamp}\n`);
+  console.log(`=== ${getHookLabel('sim')} DEMO COMPLETE (<1s, 0 external dependencies) ===\n`);
 } finally {
   fs.rmSync(tmpDir, { recursive: true, force: true });
 }

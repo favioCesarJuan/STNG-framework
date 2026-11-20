@@ -3,7 +3,7 @@
 # 🛡️ STNG-FRAMEWORK: DETERMINISTIC GIT PRE-COMMIT SHIELD
 # ==============================================================================
 # Bound via `git config core.hooksPath .agents/git-hooks`
-# Enforces Starfleet security, Semgrep SAST, Node CVE baselines, and health.
+# Enforces STNG security, Semgrep SAST, Node CVE baselines, and policy health.
 # ==============================================================================
 
 set -e

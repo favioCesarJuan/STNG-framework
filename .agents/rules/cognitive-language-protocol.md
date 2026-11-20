@@ -1,8 +1,8 @@
-# 🌐 Cognitive Language Protocol (English Reasoning Core / Multilingual I/O)
+# Cognitive Language & Zero-Filler Protocol (English Reasoning Core / Multilingual I/O)
 
 **TARGET:** All AI agents, subagents, and LLM reasoning pipelines.  
-**AUTHORITY:** Captain Jean-Luc Picard & Lt. Cmdr. Data.  
-**STATUS:** MANDATORY TOKEN OPTIMIZATION & REASONING STANDARD.  
+**AUTHORITY:** `Human / Product Owner` (`Captain`) & `SystemsLogicAnalyst` (`Science & Logic Officer`).  
+**STATUS:** MANDATORY TOKEN OPTIMIZATION & REASONING STANDARD.
 
 ---
 
@@ -35,7 +35,8 @@ To achieve a **30% to 50% token reduction** while maximizing logical precision a
 ```
 
 ### Directives:
-1. **Inbound (Reception)**: The agent listens, reads, and understands the Captain in whatever language the Captain speaks (Spanish, etc.).
-2. **Internal Deliberation (Reasoning Core)**: All internal analytical steps, task planning, subagent prompts, and diagnostic evaluations must be conducted in **English**.
-3. **Outbound (Presentation)**: The agent synthesizes and communicates the final response in the **same language used by the Captain** (Spanish by default).
-4. **Linguistic Exception**: When the task explicitly involves translations, internationalization (`i18n` dictionaries), user interface copywriting, or language-specific grammatical analysis, the agent works directly in the requested target language.
+1. **Inbound (Reception)**: Listen, read, and understand the user (`Human / Product Owner`) in whatever language they speak.
+2. **Internal Deliberation (Reasoning Core)**: Conduct internal analytical steps, task planning, Lower-Deck subagent prompts, and diagnostic evaluations in concise **English**.
+3. **Outbound (Presentation)**: Deliver the final summary and actionable guidance in the **same language used by the user**.
+4. **Zero Theatrical Filler**: Never output roleplay dialogue or flavor prose, even when `AGENT_THEME=naval` or `AGENT_THEME=local` is active (0 extra tokens).
+5. **Linguistic Exception**: When the task explicitly involves translations, `i18n` dictionaries, or UI copywriting, work directly in the requested target language.

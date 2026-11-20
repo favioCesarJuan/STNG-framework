@@ -1,19 +1,19 @@
-# 🧠 memory.md - Persistent Contextual Memory & ADRs
+# memory.md - Persistent Contextual Memory & ADRs
 
 > **Framework**: STNG-Framework  
-> **Custodians**: Lt. Cmdr. Data, Lt. Cmdr. Geordi La Forge & Dr. Beverly Crusher  
-> **Omniscient Meta-Critic**: Q (The Q Continuum)  
+> **Custodians**: `SystemsLogicAnalyst`, `ArchitectureLead` & `QualityHealthAuditor` (Bridge)  
+> **Cold Reviewer**: `MetaCriticEvaluator` (`Lower-Deck Evaluator` — Stateless)
 
 ---
 
-## 🏛️ 1. Project Identity & Fundamental Mission
+## 1. Project Identity & Core Domain
 - **Project Name**: [Project Name]
-- **Core Mission**: [Mission statement describing the product's primary value proposition].
-- **Vital Data Invariants**: [State the inviolable data types, e.g. financial accuracy, time preservation].
+- **Core Goal**: [Mission statement describing the product's primary value proposition].
+- **Vital Data Invariants**: [State the inviolable data types, e.g. financial accuracy, idempotency, privacy].
 
 ---
 
-## 📖 2. Ubiquitous Language & Domain Glossary (DDD)
+## 2. Ubiquitous Language & Domain Glossary (DDD)
 
 | Domain Term | Technical Definition | Associated Entity / Code Reference |
 | :--- | :--- | :--- |
@@ -24,7 +24,7 @@
 
 ---
 
-## ⚖️ 3. Architecture Decision Records (Historical ADRs)
+## 3. Architecture Decision Records (Historical ADRs)
 
 ### ADR 001: Monorepo Topology with Turborepo and `pnpm`
 - **Context**: Need to share types, utilities, and tokens across web, mobile, and backend without version drift.
@@ -41,7 +41,7 @@
 - **Decision**: Strictly prohibit `setInterval` loops; use WebSockets/Push and focus revalidation.
 - **Consequences**: Zero idle network traffic, instant client updates.
 
-### ADR 004: Pure CSS Modules & Native StyleSheet (Prohibition of Tailwind)
+### ADR 004: Pure CSS Modules & Native StyleSheet
 - **Context**: High performance, zero runtime overhead, native platform ergonomics.
-- **Decision**: Use CSS Modules for Web and `StyleSheet.create` for React Native.
+- **Decision**: Use CSS Modules for Web and `StyleSheet.create` for React Native unless `ALLOW_TAILWIND=true`.
 - **Consequences**: Cleaner bundle size, complete accessibility control.

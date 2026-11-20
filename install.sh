@@ -19,7 +19,7 @@ YELLOW='\033[1;33m'
 BOLD='\033[1m'
 NC='\033[0m'
 
-echo -e "${CYAN}${BOLD}🛸 [FIRST OFFICER RIKER]: Initiating STNG-Framework installation protocol...${NC}"
+echo -e "${CYAN}${BOLD}[STNG-INSTALL]: Initiating STNG-Framework installation protocol...${NC}"
 
 # Parse optional arguments
 BACKUP_EXISTING=true
@@ -41,16 +41,16 @@ done
 # Check and recommend pnpm if not detected
 echo -e "📦 Checking package manager environment..."
 if command -v pnpm >/dev/null 2>&1; then
-  echo -e "${GREEN}⚡ pnpm detected: Starfleet recommended package manager (saves disk space & ensures hardlink immutability).${NC}"
+  echo -e "${GREEN}pnpm detected: Recommended package manager (saves disk space & ensures hardlink immutability).${NC}"
 else
-  echo -e "${YELLOW}💡 Recommendation: Consider installing 'pnpm' (npm install -g pnpm).${NC}"
+  echo -e "${YELLOW}Recommendation: Consider installing 'pnpm' (npm install -g pnpm).${NC}"
   echo -e "   pnpm shares dependency store across projects, saving up to 70% disk space."
 fi
 
 # Backup existing configuration if present
 if [ -d ".agents" ] && [ "$BACKUP_EXISTING" = true ]; then
   BACKUP_DIR=".agents.backup.$(date +%Y%m%d%H%M%S)"
-  echo -e "${YELLOW}🛡️  [WORF]: Existing .agents directory detected. Backing up to $BACKUP_DIR...${NC}"
+  echo -e "${YELLOW}[SECURITY GUARD]: Existing .agents directory detected. Backing up to $BACKUP_DIR...${NC}"
   cp -r .agents "$BACKUP_DIR"
 fi
 
@@ -135,6 +135,6 @@ if [ -d ".git" ]; then
 fi
 
 echo -e "${GREEN}${BOLD}[OK]: STNG-Framework governance installed in 'standard' mode.${NC}"
-echo -e "Tip: Set AGENT_THEME=starfleet (or pass --theme=starfleet to stng init) to use Star Trek TNG crew aliases (0 extra output tokens)."
+echo -e "Tip: Set AGENT_THEME=naval (or --theme=naval) for public-domain maritime roles (Bridge/Lower Deck/Sim Deck), or --theme=local for private local overrides."
 echo -e "Run 'node --test' or 'pnpm test' to verify test suite."
 echo -e "Run 'node .agents/hooks/audit-log-writer.js --test' to verify audit ledger."
